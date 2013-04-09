@@ -1,5 +1,24 @@
-<html>
-<body>
-<h1>foobar</h1>
-</body>
-</html>
+---
+layout: default
+---
+
+<div id="content">
+
+  <ul class="posts">
+    {% for post in site.posts %}
+    <li>
+      <span class="meta">{{ post.date | date: "%Y-%m-%d" }}</span>
+      &there4;
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    On <a href="https://twitter.com/matslina">Twitter</a>,
+    <a href="https://github.com/matslina/">Github</a>,
+    <a href="http://open.spotify.com/user/mtsl">Spotify</a>.
+    Pet project: <a href="http://code.google.com/p/awib/">awib</a>.
+  </p>
+
+</div>

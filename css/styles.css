@@ -1,0 +1,66 @@
+body {
+    font: 16px verdana, helvetica-neue, helvetica, arial, san-serif;
+    background: #ffffff;
+    color: #000000;
+    padding: 0;
+    margin: 0;
+    font-size: 13.34px;
+}
+
+a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #aaa;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+}
+
+footer {
+    font-size: 0.65em;
+    text-align: center;
+}
+
+span.meta {
+    color: #aaa;
+    font-family: Monaco, "Courier New", monospace;
+    font-size: 80%;
+}
+
+#main {
+    font: "Times New Roman" georgia serif;
+    width: 640px;
+    margin: 0 auto;
+    background: #ffffff;
+}
+
+#main header {
+    padding: 0;
+    overflow: hidden;
+    margin: 0;
+    font-weight: bold;
+}
+
+#main header a {
+    color: #a00;
+}
+
+ul.posts {
+    margin: 0;
+    padding: 0;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    list-style-type: none;
+}
+
+#post {
+    padding: 1em 0;
+    margin: 0 auto;
+    text-align: justify;
+}
