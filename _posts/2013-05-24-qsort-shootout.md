@@ -17,40 +17,30 @@ to contrast their qsort() performance.
 What to measure?
 ----------------
 
-Before we go any further, we should point out that the notion of
-performance is quite subjective. A C library for embedded devices will
-have very different design goals than a C library designed for use in
-super computing. A particular implementation's runtime may be poor on
-one piece of hardware, but absolutely amazing on another. In some
-cases runtime is a secondary concern, while properties such as memory
-consumption or code size are much more important. Some of the
-implementations we'll look at only run on particular and slightly
-dated hardware.
-
-So what metric can we use here? Actual runtime won't work. Nor will we
-gain much from measuring memory consumption, since most
-implementations are
-[in-place](http://en.wikipedia.org/wiki/In-place_algorithm) anyway.
-Measuring code size is also pointless, since it really only matters
-for very particular applications (e.g. embedded).
+Evaluating an implementations performance by measuring runtime won't
+work. Some of the implementations we're interested are only
+distributed for certain types of hardware. Other target specific types
+of hardware, e.g. embedded devices.
 
 A nice thing about qsort() is that it is a generic sort function,
 meaning it can sort any type of data. The order and how to compare
 elements is defined by a comparison function which the caller must
 pass to qsort(). Since we control the comparison function, we can also
-count how many comparisons an implementation performs. This is
-actually not an entirely worthless metric. There seems to be a strong
-correlation between the number of comparisons and actual runtime,
-especially so when comparisons are expensive, e.g. when sorting longer
-character strings or more complex objects.
+count how many comparisons an implementation performs.
 
-Could also be that this is a stupid benchmark, but whatever.
+We claim that this is a pretty good metric. Invoking the comparison
+function is a fairly expensive operation, so the less often it is
+invoked the better. This is especially true when comparisons are
+expensive, e.g. when sorting long strings or complex data structures.
+
+It could also be that this is a stupid metric, but whatever.
 
 The combatants
 --------------
 
-We've a total of 15 different sorts to go through. Results can be
-found [below](#results).
+We've a total of 14 different sort functions to go through. The not
+very interested reader can [skip ahead](#results) to the results and
+fancy graphs below.
 
 ### GLIBC
 
