@@ -29,9 +29,9 @@ pass to qsort(). Since we control the comparison function, we can also
 count how many comparisons an implementation performs.
 
 We claim that this is a pretty good metric. Invoking the comparison
-function is a fairly expensive operation, so the less often it is
-invoked the better. This is especially true when comparisons are
-expensive, e.g. when sorting long strings or complex data structures.
+function is a fairly expensive operation, so the less it is invoked
+the better. This is especially true when comparisons are expensive,
+e.g. when sorting long strings or complex data structures.
 
 It could also be that this is a stupid metric, but whatever.
 
@@ -173,6 +173,37 @@ quicksort, although it wouldn't have hurt to throw in a comment or two
 in the code. It does not switch to a low overhead algorithm for small
 inputs/partitions, but it does sample multiple elements when choosing
 it's pivot.
+
+### illumos
+
+OpenSolaris ceased to exist in 2010 after Oracle bought Sun
+Microsystems. A fork of the project lives on in the shape of
+[illumos](http://www.illumos.org) and
+[OpenIndiana](http://www.openindiana.org/). The distinction between
+the two is a tad fuzzy but the C library appears to be part of
+illumos.
+
+This qsort() is very well documented and should serve well as a
+starting point for anyone interested in understanding the quicksort
+algorithm. It samples multiple elementes for pivot and switches to
+insertion sort for small partitions.
+
+### proprietary C libraries
+
+We'll also have a look at the performance of a couple of proprietary
+qsort() implementations. The source code for some of these is floating
+around on the intrawebs, but since they're non-free we won't discuss
+them in detail.
+
+* IRIX 6.5 on an Origin 300
+* OpenVMS 8.3 on a DEC Alphastation 200 4/166
+* Visual Studio 2005 on x86 running Windows XP
+* Solaris 10 on x86
+
+Many thanks to [andoma](https://www.lonelycoder.com/) for providing
+the VS2005 data. Many many thanks to
+[njansson](http://www.csc.kth.se/~njansson/) for providing access to
+his SGI machine, VAX cluster and x86 Solaris server.
 
 Results
 -------
