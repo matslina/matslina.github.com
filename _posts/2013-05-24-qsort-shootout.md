@@ -237,7 +237,7 @@ We see a fairly distinct improvement for VS2005 and especially for
 Solaris 10. They are definitely doing something right, but being
 non-free software, it's hard to say exactly what. uClibc, on the other
 hand, doesn't appear to scale very well at all. This trend is perhaps
-more clear in the next plot, which otherwise is pretty useless.
+more clear in the next plot, which is otherwise pretty useless.
 
 ![Number of comparisons per qsort() of random data for several
  sizes](/img/count_rand.png)
