@@ -133,8 +133,7 @@ linux distribution targeting embedded devices and microcontrollers),
 the [uClibc](http://www.uclibc.org/) is designed to "provide as much
 functionality as possible in a small amount of space".
 
-This qsort() implements [shell
-sort](http://en.wikipedia.org/wiki/Shell_sort) which, similarly to the
+This qsort() implements [shellsort](http://en.wikipedia.org/wiki/Shellsort) which, similarly to the
 comb sort of klibc, is an insertion sort on juice. The time complexity
 depends on the "gap sequence" used, which in uClibc's case is the
 \\((3^k-1)/2\\) (for \\(k=1,2,\ldots\\)) sequence suggested by
@@ -214,10 +213,10 @@ random data.
 ![Number of comparisons per qsort() implementation when sorting 2^16
  random elements.](/img/min_rand.png)
 
-Not entirely surprisingly, the slightly less orthodox algorithms -
-musl's smoothsort, klibc's comb sort and uClibc's shell sort - can be
-found on the left hand side. The same goes for dietlibc's somewhat
-naive quicksort.
+The slightly less orthodox algorithms - musl's smoothsort, klibc's
+comb sort and uClibc's shellsort - can be found on the left hand
+side. The same goes for dietlibc's somewhat naive quicksort
+implementation.
 
 Further right we find the C libraries of, or associated with, more or
 less major operating systems. It may be pointless to try to draw any
@@ -253,7 +252,7 @@ libc's smoothsort should also behave nicely for these inputs.
  increasing elements.](/img/max_inc.png)
 
 In addition to confirming our suspicions, we also see that uClibc's
-shell sort is doing quite well. Given the shell sort algorithm's basis
+shellsort is doing quite well. Given the shellsort algorithm's basis
 in insertion sort, which is great for sorted inputs, this is not too
 surprising. The merge sort of glibc also deserves mention; it appears
 to provide excellent behaviour for most inputs.
