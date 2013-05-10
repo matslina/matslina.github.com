@@ -22,7 +22,7 @@ work. Some of the implementations we're interested are only
 distributed for certain types of hardware. Other target specific types
 of hardware, e.g. embedded devices.
 
-A nice thing about qsort() is that it is a generic sort function,
+A nice property of qsort() is that it is a generic sort function,
 meaning it can sort any type of data. The order and how to compare
 elements is defined by a comparison function which the caller must
 pass to qsort(). Since we control the comparison function, we can also
@@ -38,29 +38,29 @@ It could also be that this is a stupid metric, but whatever.
 The combatants
 --------------
 
-We've a total of 14 different sort functions to go through. The not
-very interested reader can [skip ahead](#results) to the results and
-fancy graphs below.
+We've a total of 14 different sort functions to go through. The
+not-very-interested reader can [skip ahead](#results) to the results
+and fancy graphs below.
 
 ### GLIBC
 
 The [GNU project](http://www.gnu.org/)'s libc implementation,
 [GLIBC](http://www.gnu.org/software/libc/), powers most GNU/Linux
-distributions (sometimes in theshape of
+distributions (sometimes in the shape of
 [EGLIBC](http://www.eglibc.org/home)) and several other operating
 systems. This qsort() is interesting in that it shuns quicksort in
 favour of [merge
 sort](http://en.wikipedia.org/wiki/Merge_sort). Unlike quicksort,
 merge sort is not in-place and requires at least \\(O(n)\\) additional
 memory. If that memory is not available, or if it exceeds a fourth of
-the machine's physical RAM, then GLIBC qsort() will fall back on an
-in-place quicksort. The quicksort in turn resorts to [insertion
+the machine's physical RAM, then GLIBC will fall back to an in-place
+quicksort. The quicksort in turn resorts to [insertion
 sort](http://en.wikipedia.org/wiki/Insertion_sort) for arrays of 4 or
 fewer elements.
 
 In the graphs below, the merge sort and quicksort implementations have
-been separated (*glibc-2.17_merge* and *glibc-2.7_quick*
-respectively). Our humble gut feeling is that the merge sort is what
+been separated; *glibc-2.17_merge* and *glibc-2.7_quick*
+respectively. Our humble gut feeling is that the merge sort is what
 most commonly runs in "production" and that it is the most
 representative of the two for GLIBC. YMMV.
 
@@ -74,7 +74,7 @@ the BSD qsort() doesn't only resort to insertion sort for small
 arrays, but also does so whenever a partitioning round is completed
 without having moved any elements. The latter is intended to capture
 nearly sorted inputs, since insertion sort will handle these cases in
-linear time. A happy accident (or a clever trick)
+linear time.
 
 The implementation appears to have undergone very little change since
 [the days of 4.4BSD
@@ -106,8 +106,8 @@ their repository.
 When a machine running Linux is booting and the kernel is about to be
 brought up,
 [klibc](http://git.kernel.org/?p=libs/klibc/klibc.git;a=summary) is
-often made available to allow certain user space programs to operate
-in spite of not yet having access to a "real" C library. Klibc is
+made available to allow certain user space programs to operate in
+spite of not yet having access to a "real" C library. Klibc is
 designed to be as small and as correct as possible and is sometimes
 mentioned as a good fit for embedded systems. At roughly 40 lines of
 C, [the
@@ -128,15 +128,16 @@ practical applications.
 
 ### uClibc
 
-Originally created to support [uClinux](http://www.uclinux.org) (a
-linux distribution targeting embedded devices and microcontrollers),
+Originally created to support [uClinux](http://www.uclinux.org), a
+linux distribution targeting embedded devices and microcontrollers,
 the [uClibc](http://www.uclibc.org/) is designed to "provide as much
 functionality as possible in a small amount of space".
 
-This qsort() implements [shellsort](http://en.wikipedia.org/wiki/Shellsort) which, similarly to the
-comb sort of klibc, is an insertion sort on juice. The time complexity
-depends on the "gap sequence" used, which in uClibc's case is the
-\\((3^k-1)/2\\) (for \\(k=1,2,\ldots\\)) sequence suggested by
+This qsort() implements
+[shellsort](http://en.wikipedia.org/wiki/Shellsort) which, similarly
+to the comb sort of klibc, is an insertion sort on juice. The time
+complexity depends on the "gap sequence" used, which in uClibc's case
+is the \\((3^k-1)/2\\) (for \\(k=1,2,\ldots\\)) sequence suggested by
 Knuth. This puts the algorithm at \\(\Theta(n^{3/2})\\). There are
 other more efficient sequences out there but Knuth's sequence is both
 compact and simple in implementation.
@@ -144,9 +145,10 @@ compact and simple in implementation.
 ### dietlibc
 
 The [diet libc](http://www.fefe.de/dietlibc/) is designed to be as
-small as possible. It's qsort() is a compact and straightforward
+small as possible. Its qsort() is a compact and straightforward
 quicksort without many bells and whistles. There is no switch to
-e.g. insertion sort and only a single sample element is used as pivot.
+e.g. insertion sort and only a single element is sampled when choosing
+pivot.
 
 It is worth mentioning that dietlibc 0.32 used to always select the
 last element as pivot. This results in qsort() using \\(O(n)\\) stack
@@ -159,20 +161,6 @@ we consider in this article.
 
 smoothsoort. have to figure out how it works./
 
-### plan9
-
-Last but not least among the free software libraries, we have [Plan 9
-from Bell Labs](http://plan9.bell-labs.com/plan9/index.html). This
-research OS was/is develeoped as a successor to, but not a variant of
-Unix. It's worth [reading up on](http://plan9.bell-labs.com/sys/doc/).
-
-Plan9's qsort() is a very [clean
-looking](http://plan9.bell-labs.com/sources/plan9/sys/src/libc/port/qsort.c)
-quicksort, although it wouldn't have hurt to throw in a comment or two
-in the code. It does not switch to a low overhead algorithm for small
-inputs/partitions, but it does sample multiple elements when choosing
-it's pivot.
-
 ### illumos
 
 OpenSolaris ceased to exist in 2010 after Oracle bought Sun
@@ -182,10 +170,24 @@ Microsystems. A fork of the project lives on in the shape of
 the two is a tad fuzzy but the C library appears to be part of
 illumos.
 
-This qsort() is very well documented and should serve well as a
-starting point for anyone interested in understanding the quicksort
+This qsort() is very well documented and should serve nicely as a
+starting point for anyone interested in studying the quicksort
 algorithm. It samples multiple elementes for pivot and switches to
 insertion sort for small partitions.
+
+### plan9
+
+Last but not least among the free software libraries, we have [Plan 9
+from Bell Labs](http://plan9.bell-labs.com/plan9/index.html). This
+research OS was/is develeoped as a successor to Unix. It's worth
+[reading up on](http://plan9.bell-labs.com/sys/doc/).
+
+Plan9's qsort() is a very [clean
+looking](http://plan9.bell-labs.com/sources/plan9/sys/src/libc/port/qsort.c)
+quicksort, although it wouldn't have hurt to throw in a comment or two
+in the code. It does not switch to a low overhead algorithm for small
+inputs/partitions, but it does sample multiple elements when choosing
+it's pivot.
 
 ### proprietary C libraries
 
@@ -199,13 +201,15 @@ them in detail.
 * Visual Studio 2005 on x86 running Windows XP
 * Solaris 10 on x86
 
-Many thanks to [andoma](https://www.lonelycoder.com/) for providing
-the VS2005 data. Many many thanks to
+Many thanks to [andoma](http://www.lonelycoder.com/) for providing the
+VS2005 data. Many many thanks to
 [njansson](http://www.csc.kth.se/~njansson/) for providing access to
 his SGI machine, VAX cluster and x86 Solaris server.
 
 Results
 -------
+
+### Random data
 
 We'll start by looking at the number of comparisons when sorting
 random data.
@@ -221,12 +225,14 @@ implementation.
 Further right we find the C libraries of, or associated with, more or
 less major operating systems. It may be pointless to try to draw any
 conclusions about how these fair against eachother - they're all doing
-pretty well - but we can perhaps discern three clusters. The most well
-performing one holds glibc's merge sort and the proprietary qsort() of
-solaris 10. To the least well performing we count OpenVMS, VS2005,
-IRIX, plan9 and glibc's quicksort. The BSD quicksorts, both with and
-without the heuristic for switching to insertion sort for nearly
-sorted data, and opensolaris reside in the middle.
+pretty well - but we can still discern three clusters.
+
+The most well performing one holds glibc's merge sort and the
+proprietary qsort() of solaris 10. To the least well performing we
+count OpenVMS, VS2005, IRIX, plan9 and glibc's quicksort. The BSD
+quicksorts, both with and without the heuristic for switching to
+insertion sort for nearly sorted data, and opensolaris reside in the
+middle.
 
 What happens when we bump up the input size by a factor of 64?
 
@@ -242,11 +248,14 @@ more clear in the next plot, which is otherwise pretty useless.
 ![Number of comparisons per qsort() of random data for several
  sizes](/img/count_rand.png)
 
+### Ordered data
+
 While random data may be the most important test case, it is also
 interesting to consider nearly or completely sorted inputs. We can
 e.g. expect nice behaviour from FreeBSD, with its switch to insertion
-sort, but perhaps less so for NetBSD which removes said switch. Musl
-libc's smoothsort should also behave nicely for these inputs.
+sort for nearly sorted data, but not so much from NetBSD which removes
+said switch. Musl libc's smoothsort should also behave nicely for
+these inputs.
 
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
@@ -257,19 +266,18 @@ in insertion sort, which is great for sorted inputs, this is not too
 surprising. The merge sort of glibc also deserves mention; it appears
 to provide excellent behaviour for most inputs.
 
-An input size of \((2^{16}\)) doesn't change the results very much, so
-instead we'll have a look at strictly decreasing input, i.e. the
-reverse of a sorted input.
-
 ![Number of comparisons per qsort() implementation when sorting 2^22
  decreasing elements.](/img/max_dec.png "max dec")
 
-Here we see worsened behaviour for musl, uClibc and also
-NetBSD. FreeBSD however remains the same. As it turns out, this is
-thanks to how the quicksort partitioning is implemented. It mostly
-reverses the order of the elements in each partition, which in turn
-allows the heuristic for nearly sorted data to kick in early. Whether
-this this is intentional or just a happy accident... no idea.
+In this final diagram we consider strictly decreasing input, i.e. the
+reverse of a sorted input. Here we see a drop in performance for musl,
+uClibc and NetBSD. FreeBSD however remains the same.
+
+As it turns out, FreeBSD's performance stems from how the quicksort
+partitioning round is implemented. It mostly reverses the order of the
+elements in each partition, which in turn allows the heuristic for
+nearly sorted data to kick in early. Is this intentional or just a
+happy accident? No idea.
 
 Does this matter?
 -----------------
@@ -278,11 +286,7 @@ Previously we argued that the number of comparisons is a useful
 metric. If nothing else, it allows us to reason about the relative
 performance of proprietary implementations running on archaic/obscure
 hardware (no offence to fans of SGI or VAX). But how strong is the
-correlation between this metric and actual performance? One could
-expect that invocations of the comparison function are expensive and
-that the correlation therefore ought to be quite strong.
-
-Let's put that to the test.
+correlation between this metric and actual performance?
 
 ![Runtime and number of comparisons per qsort() when sorting random
  integers.](/img/runtime_rand.png)
