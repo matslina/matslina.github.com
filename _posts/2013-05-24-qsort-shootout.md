@@ -179,7 +179,7 @@ insertion sort for small partitions.
 
 Last but not least among the free software libraries, we have [Plan 9
 from Bell Labs](http://plan9.bell-labs.com/plan9/index.html). This
-research OS was/is develeoped as a successor to Unix. It's worth
+research OS was/is developed as a successor to Unix. It's worth
 [reading up on](http://plan9.bell-labs.com/sys/doc/).
 
 Plan9's qsort() is a very [clean
