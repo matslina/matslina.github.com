@@ -17,10 +17,14 @@ to contrast their qsort() performance.
 What to measure?
 ----------------
 
-Evaluating an implementations performance by measuring runtime won't
-work. Some of the implementations we're interested are only
-distributed for certain types of hardware. Other target specific types
-of hardware, e.g. embedded devices.
+Evaluating an implementation's performance by measuring its execution
+time won't work. Some of the C libraries we're interested in are
+proprietary and can only be run on specific hardware with a specific
+operating system. Other libraries target particular types of hardware,
+e.g. embedded, or are written to work well with a particular
+compiler's optimization strategy. We will not learn much of interest
+by measuring runtime on just one specific setup of hardware, OS and
+compiler.
 
 A nice property of qsort() is that it is a generic sort function,
 meaning it can sort any type of data. The order and how to compare
@@ -28,10 +32,11 @@ elements is defined by a comparison function which the caller must
 pass to qsort(). Since we control the comparison function, we can also
 count how many comparisons an implementation performs.
 
-We claim that this is a pretty good metric. Invoking the comparison
-function is a fairly expensive operation, so the less it is invoked
-the better. This is especially true when comparisons are expensive,
-e.g. when sorting long strings or complex data structures.
+We claim that this, the number of comparisons, is a pretty good
+metric. Invoking the comparison function is a fairly expensive
+operation, so the less often it is invoked the better. This is
+especially true when comparisons are expensive, e.g. when sorting long
+strings or complex data structures.
 
 It could also be that this is a stupid metric, but whatever.
 
@@ -95,11 +100,10 @@ round finishes without moving elements.
 
 The motivation for this change seems to be the possibility of
 particular inputs triggering insertion sort in spite of the data being
-highly unsorted. This in turn means quadratic complexity, which can be
-devastating for large inputs. The issue has been
+highly unsorted. This in turn would mean quadratic complexity, which
+can be devastating for large inputs. The issue has been
 [discussed](http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg155127.html)
-by FreeBSD hackers earlier, but does not appear to have been fixed in
-their repository.
+by FreeBSD hackers earlier.
 
 ### klibc
 
@@ -159,7 +163,19 @@ we consider in this article.
 
 ### musl
 
-smoothsoort. have to figure out how it works./
+Smoothsort is a variation of heapsort that performs especially well on
+nearly sorted inputs. It's a pretty complicated beast and it does take
+some effort to wrap one's head around it. Keith Schwarz has posted a
+[nice walkthrough](http://www.keithschwarz.com/smoothsort/) that the
+interested reader should check out.
+
+Considering that [musl libc](http://www.musl-libc.org/) puts
+simplicity among its design goals, the choice of smoothsort could seem
+odd. [The
+code](http://git.musl-libc.org/cgit/musl/tree/src/stdlib/qsort.c) is
+however clean and readable and getting a \\(O(n\log n)\\) worst case
+with near linear complexity for nearly sorted inputs is a pretty sweet
+deal.
 
 ### illumos
 
@@ -192,9 +208,9 @@ it's pivot.
 ### proprietary C libraries
 
 We'll also have a look at the performance of a couple of proprietary
-qsort() implementations. The source code for some of these is floating
-around on the intrawebs, but since they're non-free we won't discuss
-them in detail.
+qsort() implementations. The source code for some of these is surely
+floating around on the intrawebs, but since they're non-free we won't
+discuss them in detail.
 
 * IRIX 6.5 on an Origin 300
 * OpenVMS 8.3 on a DEC Alphastation 200 4/166
@@ -250,12 +266,12 @@ more clear in the next plot, which is otherwise pretty useless.
 
 ### Ordered data
 
-While random data may be the most important test case, it is also
-interesting to consider nearly or completely sorted inputs. We can
-e.g. expect nice behaviour from FreeBSD, with its switch to insertion
-sort for nearly sorted data, but not so much from NetBSD which removes
-said switch. Musl libc's smoothsort should also behave nicely for
-these inputs.
+While random data may seem like the most important test case, it is
+also interesting to consider nearly or completely sorted inputs. We
+can e.g. expect nice behaviour from FreeBSD, with its switch to
+insertion sort for nearly sorted data, but not so much from NetBSD
+which removes said switch. Musl libc's smoothsort should also behave
+nicely for these inputs.
 
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
@@ -269,15 +285,15 @@ to provide excellent behaviour for most inputs.
 ![Number of comparisons per qsort() implementation when sorting 2^22
  decreasing elements.](/img/max_dec.png "max dec")
 
-In this final diagram we consider strictly decreasing input, i.e. the
+In this final plot we consider strictly decreasing input, i.e. the
 reverse of a sorted input. Here we see a drop in performance for musl,
 uClibc and NetBSD. FreeBSD however remains the same.
 
-As it turns out, FreeBSD's performance stems from how the quicksort
-partitioning round is implemented. It mostly reverses the order of the
-elements in each partition, which in turn allows the heuristic for
-nearly sorted data to kick in early. Is this intentional or just a
-happy accident? No idea.
+As it turns out, FreeBSD's strong performance on decreasing data stems
+from how the quicksort partitioning round is implemented. It mostly
+reverses the order of the elements in each partition, which in turn
+allows the heuristic for nearly sorted data to kick in early. Is this
+intentional or just a happy accident? No idea.
 
 Does this matter?
 -----------------
@@ -288,13 +304,18 @@ performance of proprietary implementations running on archaic/obscure
 hardware (no offence to fans of SGI or VAX). But how strong is the
 correlation between this metric and actual performance?
 
+In the bar chart below we find actual execution time in seconds side
+by side with the number of comparisons for all the free software
+implementations. This data was gathered on a Lenovo X220 running
+Debian GNU/Linux. Compilation was done with GCC using -O0.
+
 ![Runtime and number of comparisons per qsort() when sorting random
- integers.](/img/runtime_rand.png)
+ integers.](/img/perf_int.png)
 
+Again, we're not really interested in which implementation that
+happens to be the fastest on our particular combination of hardware,
+OS and compiler, but it is pleasant to note that this data doesn't
+completely contradict the hypothesis of the number of comparisons
+being a reasonable metric.
 
-
-
-Summary
--------
-
-GLIBC!!!! WOOOOOOOOOOOOO!
+Over and out.
