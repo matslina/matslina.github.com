@@ -124,11 +124,7 @@ on steroids. While the source code claims a time complexity of
 \\(O(n\log n)\\), others,
 e.g. [Vitányi](http://www.cwi.nl/~paulv/papers/sorting.pdf), put the
 average complexity at \\(\Omega(n^2/2^p)\\), where \\(p\\) is the
-number of passes. For klibc, using a shrinking factor of 1.3, we
-should be able to expect \\(p\ge\lfloor\log_{1.3}(n)\rfloor\\). Since
-\\(n^2/2^{\log_{1.3}(n)}\\) is ridiculously small for larger values of
-\\(n\\), it probably makes sense to ignore the quadratic term for most
-practical applications.
+number of passes.
 
 ### uClibc
 
