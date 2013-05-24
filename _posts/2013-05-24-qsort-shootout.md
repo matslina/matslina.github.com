@@ -110,7 +110,7 @@ by FreeBSD hackers earlier.
 When a machine running Linux is booting and the kernel has just been
 brought up,
 [klibc](http://git.kernel.org/?p=libs/klibc/klibc.git;a=summary) is
-sometimes made available to allow certain user space programs to
+sometimes made available to allow certain early user space programs to
 operate in spite of not yet having access to a "real" C library. Klibc
 is designed to be as small and as correct as possible and is sometimes
 mentioned as a good fit for embedded systems. At roughly 40 lines of
