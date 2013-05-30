@@ -11,8 +11,8 @@ suggests that [quicksort](http://en.wikipedia.org/wiki/Quicksort)
 might be a good choice of algorithm, the standard does not dictate
 what algorithm an implementation should use.
 
-In this post we'll take a look at a few libc implementations and try
-to contrast their qsort() performance.
+In this post we'll take a look at a few libc qsort() implementations
+and try to contrast their performance.
 
 What to measure?
 ----------------
@@ -110,9 +110,9 @@ by FreeBSD hackers earlier.
 When a machine running Linux is booting and the kernel has just been
 brought up,
 [klibc](http://git.kernel.org/?p=libs/klibc/klibc.git;a=summary) is
-sometimes made available to allow certain early user space programs to
-operate in spite of not yet having access to a "real" C library. Klibc
-is designed to be as small and as correct as possible and is sometimes
+made available to allow certain early user space programs to operate
+in spite of not yet having access to a "real" C library. Klibc is
+designed to be as small and as correct as possible and is sometimes
 mentioned as a good fit for embedded systems. At roughly 40 lines of
 C, [the qsort
 code](http://git.kernel.org/cgit/libs/klibc/klibc.git/tree/usr/klibc/qsort.c?id=HEAD)
@@ -120,11 +120,12 @@ is very compact and easy to grok.
 
 The klibc qsort() implements the [comb
 sort](http://en.wikipedia.org/wiki/Comb_sort) algorithm; a bubble sort
-on steroids. While the source code claims a time complexity of
-\\(O(n\log n)\\), others,
-e.g. [Vitányi](http://www.cwi.nl/~paulv/papers/sorting.pdf), put the
+on steroids. The source code claims a time complexity of \\(O(n\log
+n)\\) but there is a lot of conflicting information floating
+around. [Vitányi](http://www.cwi.nl/~paulv/papers/sorting.pdf) put the
 average complexity at \\(\Omega(n^2/2^p)\\), where \\(p\\) is the
-number of passes.
+number of passes, but to what extent that matters in practice is not
+clear.
 
 ### uClibc
 
@@ -146,16 +147,16 @@ compact and simple in implementation.
 
 The [diet libc](http://www.fefe.de/dietlibc/) is designed to be as
 small as possible. Its qsort() is a compact and straightforward
-quicksort without many bells and whistles. There is no switch to
-e.g. insertion sort and only a single element is sampled when choosing
-pivot.
+quicksort without many bells and whistles. There is no switch to a low
+overhead algorithm for small arrays and only a single element is
+sampled when choosing pivot.
 
 It is worth mentioning that dietlibc 0.32 used to always select the
 last element as pivot. This results in qsort() using \\(O(n)\\) stack
 frames for sorted inputs, effectively crashing due to stack overflow
-on anything but tiny numbers of elements. This has been fixed in
-version 0.33 by choosing random pivots, and this is also the version
-we consider in this article.
+on anything but tiny numbers of elements. This has been fixed in 0.33
+by choosing random pivots and that is also the version we consider in
+this article.
 
 ### musl
 
@@ -217,7 +218,7 @@ discuss them in detail.
 Many thanks to [andoma](http://www.lonelycoder.com/) for providing the
 VS2005 data. Many many thanks to
 [njansson](http://www.csc.kth.se/~njansson/) for providing access to
-his SGI machine, VAX cluster and x86 Solaris server.
+his SGI machine, his VAX cluster and to his x86 Solaris server.
 
 Results
 -------
@@ -256,7 +257,7 @@ There's a distinct improvement for VS2005 and especially for Solaris
 10. They are definitely doing something right, but being non-free
 software, it's hard to say exactly what. uClibc, on the other hand,
 doesn't appear to scale very well at all. This trend is perhaps more
-clear in the next plot.
+clear as we plot the number of comparisons for multiple input sizes.
 
 ![Number of comparisons per qsort() of random data for several
  sizes](/img/count_rand.png)
@@ -264,20 +265,20 @@ clear in the next plot.
 ### Ordered data
 
 While random data may seem like the most important test case, it is
-also interesting to consider nearly or completely sorted inputs. We
-can e.g. expect nice behaviour from FreeBSD, with its switch to
-insertion sort for nearly sorted data, but not so much from NetBSD
+also important to consider nearly or completely sorted inputs. We
+should be able to expect nice behaviour from FreeBSD, with its switch
+to insertion sort for nearly sorted data, but not so much from NetBSD
 which removed said switch. Musl libc's smoothsort should also behave
 nicely for these inputs.
 
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
 
-In addition to confirming our suspicions, we also see that uClibc's
-shellsort is doing quite well. Given the shellsort algorithm's basis
-in insertion sort, which is great for sorted inputs, this is not too
-surprising. The merge sort of GLIBC also deserves mention; it appears
-to provide excellent behaviour for most inputs.
+As expected, both FreeBSD and musl libc perform very few comparisons
+in this case. We also see that uClibc's shellsort is doing quite
+well. Given the shellsort algorithm's basis in insertion sort, which
+is great for sorted inputs, this is not too surprising. The merge sort
+of GLIBC also deserves mention.
 
 Finally, we'll have a look at what happens when sorting strictly
 decreasing input, i.e. the reverse of sorted input.
@@ -305,15 +306,16 @@ correlation between this metric and actual performance?
 In the bar chart below we find actual execution time in seconds side
 by side with the number of comparisons for all the free software
 implementations. This data was gathered on a Lenovo X220 running
-Debian GNU/Linux. Compilation was done with GCC using -O0.
+Debian GNU/Linux. Compilation was done with gcc 4.4.5 using
+optimization level 0 (-O0).
 
 ![Runtime and number of comparisons per qsort() when sorting random
  integers.](/img/perf_int.png)
 
-Again, we're not really interested in which implementation that
-happens to be the fastest on our particular combination of hardware,
-OS and compiler, but it is pleasant to note that this data doesn't
-completely contradict the hypothesis of the number of comparisons
-being a reasonable metric.
+Again, we're not really interested in which implementation happens to
+be the fastest on our particular combination of hardware, OS and
+compiler, but it is pleasant to note that this data doesn't completely
+contradict the hypothesis of the number of comparisons being a
+reasonable metric.
 
-Over and out.
+That was all. Over and out.
