@@ -2,7 +2,7 @@
 layout: post
 title: a libc qsort() shootout
 location: New York
-draft: true
+draft: false
 ---
 
 The C Standard Library (libc) provides a generic sort function called
