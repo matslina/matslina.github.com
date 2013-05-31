@@ -1,6 +1,6 @@
 ---
 layout: post
-title: a libc qsort() shootout
+title: a libc qsort() shootout of sorts
 location: New York
 draft: false
 ---
