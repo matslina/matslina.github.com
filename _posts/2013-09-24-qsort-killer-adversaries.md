@@ -89,8 +89,8 @@ input also opens up for a very nasty worst case behaviour. Consider an
 input created by the following snippet of code:
 
       for (i = 0;       i < n/2; i++) v[i] = n/2 - i;
-      for (i = n/2 + 1; i < n;   i++) v[i] = n  + n/2 + 1 - i;
       v[n/2] = n/2 + 1;
+      for (i = n/2 + 1; i < n;   i++) v[i] = n  + n/2 + 1 - i;
 
 The plot below visualizes this input for \\(n=64\\).
 
@@ -145,28 +145,62 @@ nice read.
 In a nutshell, this article describes a simple adversarial program
 which can reduce almost any quicksort implementation to quadratic
 performance. There's no point in rehashing the article - it really is
-both well written and accessible - but here's a rough outline of how
-it works.
+both well-written and accessible - but let's have a look at what it
+can do to NetBSD qsort().
 
-<!-- is it worth outlining this? will that make anything clearer? -->
-
-### antiqsort vs NetBSD
-
-![antiqsort killer adversary for NetBSD 6.0
- qsort()](/img/anti_netbsd-6.0.png)
+### McIlroy vs NetBSD
 
 ![antiqsort killer adversary for NetBSD 6.0
  qsort()](/img/anti_lines_netbsd-6.0.png)
 
-### antiqsort vs glibc
+Blam! Quadratic complexity. The absolute numbers aren't quite as bad
+as for the regular BSD case, but it is quadratic and that's bad
+enough.
+
+The visualization of the BSD killer input was inspired by similar
+graphics for Digital Unix in McIlroy's article. As it turns out, the
+corresponding visualization for NetBSD is not even remotely as pretty.
+
+![antiqsort killer adversary for NetBSD 6.0
+ qsort()](/img/anti_netbsd-6.0.png)
+
+Fortunately, good looks don't matter here. There's no need to reverse
+engineer the code that constructs the input. McIlroy's adversary can
+generate it for any input size and (almost) any quicksort just by
+linking and doing a single round of sorting. The only caveat is that
+if the implementation is randomized, then we lose the ability to
+"replay" the input at a later time. Again, not a big problem in
+practice as very few major C libraries bother with randomization.
+
+### McIlroy vs the world
+
+For fun, we'll also have a look at how the McIlroy adversary fares
+against a couple of other libc quicksort implementations. Bear in mind
+that quicksort is not the default code path of glibc qsort(). It
+prefers using mergesort and only falls back when certain memory limits
+come into play. More on that in [the previous
+post](/2013/05/31/qsort-shootout.html#glibc).
+
+![McIlroy antiqsort killer adversaries for several quicksort based
+ libc qsort()](/img/anti_many_quick.png)
+
+<!-- line plot with all num cmps for all impls against antiqsort -->
+
+### a look at some non-libc sort implementations?
+
+TL;DR
+=====
+
+Plain BSD qsort() can be tricked into running insertion sort on its
+whole input with terrible performance as a consequence. There exists a
+simple technique for triggering similar behaviour in almost any
+quicksort implementation. This applies to a fair bit of software used
+in the wild, including most major libc implementations.
+
+Over and out.
 
 ![antiqsort killer adversary for the quicksort component of glibc 2.17
  qsort()](/img/anti_glibc-2.17_quick.png)
-
-![antiqsort killer adversary for the quicksort component of glibc 2.17
- qsort()](/img/anti_lines_glibc-2.17_quick.png)
-
-### bderp
 
 ![antiqsort killer adversary for illumos
  qsort()](/img/anti_illumos.png)
