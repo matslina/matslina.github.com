@@ -118,9 +118,7 @@ of an \\(O(n^2)\\) algorithm.
 
 As mentioned, the FreeBSD implementation is essentially the same as
 that of 4.4BSD Lite, but there are many other descendants of this
-BSD. OpenBSD, Dragonfly BSD and OSX all share this qsort().
-
-<!-- find someone with an OSX machine and verify this -->
+BSD. OpenBSD and Dragonfly BSD both share this qsort().
 
 But not NetBSD. A [2009
 commit](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/stdlib/qsort.c?rev=1.20&content-type=text/x-cvsweb-markup&only_with_tag=MAIN)
