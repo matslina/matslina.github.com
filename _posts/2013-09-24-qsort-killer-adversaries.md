@@ -21,12 +21,12 @@ them. For fun and profit.
 Breaking BSD
 ============
 
-Inspecting a [diff between the qsort() of 4.4BSD Lite and that of
-FreeBSD
-9.1](http://svnweb.freebsd.org/base/stable/9/lib/libc/stdlib/qsort.c?view=diff&r1=225736&r2=1573&diff_format=h)
-reveals that very few things have changed since 1994. Some K&R syntax
-has been removed, some macros have been introduced, support for the
-reentrant qsort_r() has been added and a couple of variables have been
+Inspecting a
+[diff](http://svnweb.freebsd.org/base/stable/9/lib/libc/stdlib/qsort.c?view=diff&r1=225736&r2=1573&diff_format=h)
+between the qsort() of 4.4BSD Lite and that of FreeBSD 9.1 reveals
+that very few things have changed since 1994. Some K&R syntax has been
+removed, some macros have been introduced, support for the reentrant
+qsort_r() has been added and a couple of variables have been
 renamed. Other than that, the code is pretty much the same.
 
 This isn't a cause for concern in and of itself. As we saw in the
@@ -57,11 +57,11 @@ The basic flow of quicksort is as follows:
 2. Partition the data around the pivot; smaller elements to the left, larger to the right
 3. Recursively quicksort the partitions
 
-As long as the partitions end up being of "roughly" the same size, we
-can expect the algorithm to run in \\(O(n\log n)\\). An ideal pivot
-selection would always pick the median, but that's prohibitively
-expensive in practice. BSD qsort() selects its pivot by sampling up to
-9 input elements, like so:
+As long as the partitions end up being roughly the same size, we can
+expect the algorithm to run in \\(O(n\log n)\\). An ideal pivot
+selection would always pick the median element, but that's
+prohibitively expensive in practice. BSD qsort() approximates the true
+median by sampling up to 9 input elements, like so:
 
     pivot = median(median(v[0],         v[n/8],       v[n/4]),
                    median(v[n/2 - n/8], v[n/2],       v[n/2 + n/8]),
@@ -78,9 +78,13 @@ overhead makes it ideal for small numbers of elements.
 As mentioned, the BSD qsort() really shines on sorted or partially
 sorted inputs. This is due to a simple heuristic: whenever a
 partitioning round finishes without rearranging any elements, we
-switch to insertion sort. Whenever qsort() encounters partially sorted
-data, there's a very good chance of this heuristic triggering a linear
-insertion sort on the sorted segments.
+switch to insertion sort. While insertion sort is slow (\\(O(n^2)\\))
+on general inputs, it's super fast (\\(O(n)\\)) on sorted data. When
+BSD qsort() is fed partially sorted data, there's a very good chance
+of this heuristic triggering linear insertion sort on the sorted
+segments. Excellent performance ensues.
+
+<!-- "ensues"? feels weird. check w native speaker. -->
 
 ### Attacking the heuristic
 
@@ -98,13 +102,13 @@ The plot below visualizes this input for \\(n=64\\).
  sort and significant performance
  degradation.](/img/anti_freebsd-8.1.0.png)
 
-If we feed this into the previously discussed pivot selection, we'll
-get back the element at position \\(n/2\\), i.e. \\(n/2+1\\). The data
-is already perfectly partitioned around this element so no elements
-will be rearranged. Therefore qsort() will assume that it's facing a
-nearly sorted input and happily switch to insertion
-sort. Unfortunately, the input is far from sorted and insertion sort
-will exhibit catastrophic quadratic behaviour.
+Feed this into the previously mentioned pivot selection and the
+element at position \\(n/2\\) will pop out. Since the data is already
+perfectly partitioned around this entry, no elements will be
+rearranged and qsort() will assume that it's facing a nearly sorted
+input. It then happily switches to insertion sort. Unfortunately, the
+data is far from sorted and the algorithm will exhibit catastrophic
+quadratic behaviour.
 
 ![BSD qsort() input which will trigger premature switch to insertion
  sort and significant performance
@@ -118,14 +122,17 @@ of an \\(O(n^2)\\) algorithm.
 
 As mentioned, the FreeBSD implementation is essentially the same as
 that of 4.4BSD Lite, but there are many other descendants of this
-BSD. OpenBSD and Dragonfly BSD both share this qsort().
+BSD. Both OpenBSD and Dragonfly BSD share this implementation.
 
-But not NetBSD. A [2009
+But not NetBSD! A [2009
 commit](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/stdlib/qsort.c?rev=1.20&content-type=text/x-cvsweb-markup&only_with_tag=MAIN)
-removed the switch to insertion sort, citing "*catastrophic performance
-for certain inputs*". Other projects borrowing the BSD qsort() have
-made similar modifications,
-e.g. [PostgreSQL](http://git.postgresql.org/gitweb/?p=postgresql.git;a=blob;f=src/port/qsort.c;h=2747df3c5a6507201d0ce6b899ea89eecc623e35;hb=HEAD#l4).
+removed the switch to insertion sort, citing "*catastrophic
+performance for certain inputs*". Other projects borrowing the BSD
+qsort() have made similar modifications,
+e.g. [PostgreSQL](http://git.postgresql.org/gitweb/?p=postgresql.git;a=blob;f=src/port/qsort.c;h=2747df3c5a6507201d0ce6b899ea89eecc623e35;hb=HEAD#l4)
+and OSX.
+
+<!-- link to the OSX mod -->
 
 This obviously raises the question: can we trigger quadratic behaviour
 in the NetBSD qsort()?
@@ -143,8 +150,10 @@ nice read.
 In a nutshell, this article describes a simple adversarial program
 which can reduce almost any quicksort implementation to quadratic
 performance. There's no point in rehashing the article - it really is
-both well-written and accessible - but let's have a look at what it
-can do to NetBSD qsort().
+both well-written and accessible - so let's instead have a look at
+what it can do to NetBSD qsort().
+
+<!-- perhaps add a bit more detail on antiqsort -->
 
 ### McIlroy vs NetBSD
 
@@ -157,7 +166,7 @@ enough.
 
 The visualization of the BSD killer input was inspired by similar
 graphics for Digital Unix in McIlroy's article. As it turns out, the
-corresponding visualization for NetBSD is not even remotely as pretty.
+corresponding visualization for NetBSD is not even remotely as pretty:
 
 ![antiqsort killer adversary for NetBSD 6.0
  qsort()](/img/anti_netbsd-6.0.png)
@@ -176,13 +185,11 @@ For fun, we'll also have a look at how the McIlroy adversary fares
 against a couple of other libc quicksort implementations. Bear in mind
 that quicksort is not the default code path of glibc qsort(). It
 prefers using mergesort and only falls back when certain memory limits
-come into play. More on that in [the previous
-post](/2013/05/31/qsort-shootout.html#glibc).
+come into play. More on that and on the other implementations in [the
+previous post](/2013/05/31/qsort-shootout.html#glibc).
 
 ![McIlroy antiqsort killer adversaries for several quicksort based
  libc qsort()](/img/anti_montage.png)
-
-<!-- line plot with all num cmps for all impls against antiqsort -->
 
 ### a look at some non-libc sort implementations?
 
