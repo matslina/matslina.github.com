@@ -182,7 +182,7 @@ come into play. More on that in [the previous
 post](/2013/05/31/qsort-shootout.html#glibc).
 
 ![McIlroy antiqsort killer adversaries for several quicksort based
- libc qsort()](/img/anti_many_quick.png)
+ libc qsort()](/img/anti_montage.png)
 
 <!-- line plot with all num cmps for all impls against antiqsort -->
 
@@ -198,18 +198,3 @@ quicksort implementation. This applies to a fair bit of software used
 in the wild, including most major libc implementations.
 
 Over and out.
-
-![antiqsort killer adversary for the quicksort component of glibc 2.17
- qsort()](/img/anti_glibc-2.17_quick.png)
-
-![antiqsort killer adversary for illumos
- qsort()](/img/anti_illumos.png)
-
-![antiqsort killer adversary for illumos
- qsort()](/img/anti_lines_illumos.png)
-
-![antiqsort killer adversary for plan9
- qsort()](/img/anti_plan9.png)
-
-![antiqsort killer adversary for plan9
- qsort()](/img/anti_lines_plan9.png)
