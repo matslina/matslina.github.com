@@ -300,7 +300,7 @@ its whole input with terrible performance as a consequence. There
 exists a simple technique for triggering similar behaviour in almost
 any quicksort implementation, including those of most major libc
 implementations. Exploiting this in an algorithmic complexity attack
-in the wild is likely not trivial but can be done under certain
-circumstances.
+in the wild is likely not trivial but is under certain circumstances
+conceivable.
 
 That was all. Over and out.
