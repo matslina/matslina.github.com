@@ -40,6 +40,8 @@ removed, some macros have been introduced, support for the reentrant
 qsort_r() has been added and a couple of variables have been
 renamed. Other than that, the code is pretty much the same.
 
+<!-- 4.4BSD Lite OR 4.4BSD-Lite ?? -->
+
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
 
@@ -124,10 +126,11 @@ The plot below visualizes this input for \\(n=64\\).
 
 Feed this into the BSD pivot selection and the element at position
 \\(n/2\\) will pop out. Since the data is already perfectly
-partitioned around this entry, no elements will be rearranged, qsort()
-will assume that it's facing a nearly sorted input and will happily
-switch to insertion sort. The data is however far from sorted and the
-algorithm will exhibit catastrophic quadratic behaviour.
+partitioned around this element, no other elements will be rearranged
+and qsort() will assume that it's facing a nearly sorted input and
+will then switch to insertion sort. The data is however far from
+sorted and the algorithm will exhibit catastrophic quadratic
+behaviour.
 
 ![Number of comparisons performed by BSD qsort() on random and worst
  case inputs.](/img/anti_lines_freebsd-8.1.0.png)
@@ -162,12 +165,10 @@ Breaking almost any quicksort
 =============================
 
 The same [McIlroy]((http://www.cs.dartmouth.edu/~doug/) who
-co-authored *Engineering a sort function* (the article mentioned above;
-the one you should read) also wrote [A Killer Adversary for
-Quicksort](http://www.cs.dartmouth.edu/~doug/mdmspe.pdf). It's a very
-nice read.
-
-In a nutshell, this article describes a simple adversarial program,
+co-authored *Engineering a sort function* (the article mentioned
+above; the one you should read) also wrote [A Killer Adversary for
+Quicksort](http://www.cs.dartmouth.edu/~doug/mdmspe.pdf). In a
+nutshell, this article describes a simple adversarial program,
 *antiqsort*, that reduces almost any quicksort implementation to
 quadratic performance. There's no point in rehashing the article - it
 really is both well-written and accessible - so let's instead have a
@@ -185,7 +186,7 @@ Blam! Quadratic complexity. The absolute numbers aren't quite as bad
 as for the regular BSD qsort(), but it is quadratic and that's bad
 enough.
 
-The visualization of the BSD killer input was inspired by similar
+The visualization of the FreeBSD killer input was inspired by similar
 graphics for Digital Unix in McIlroy's article. As it turns out, the
 corresponding visualization for NetBSD is not even remotely as pretty.
 
@@ -197,7 +198,8 @@ generate these inputs of any size for (almost) any quicksort just by
 linking and doing a single round of sorting. The only caveat is that
 if the implementation is randomized, then we lose the ability to
 "replay" the input at a later time. Again, not a big problem in
-practice as very few C libraries bother with randomization.
+practice since very few C libraries bother with randomization of their
+sort function.
 
 ### McIlroy vs the world
 
@@ -211,37 +213,49 @@ in the previous post.
 ![McIlroy antiqsort killer adversaries for several quicksort based
  libc qsort()](/img/anti_montage.png)
 
+<!-- replace this with a table of client size resized images wrapped
+in hyperlinks to full sized image -->
+
 Some inputs are beautiful. Some aren't. They all trigger quadratic
 complexity.
 
-What does this mean in practice?
-================================
+Can this be exploited?
+======================
 
-<!-- this whole section must be transmogrified -->
+First of all, if this was such a big deal then we would probably be
+seeing algorithmic complexity attacks against qsort() all the time in
+the wild. And we don't. Very few programmers would willingly call
+qsort() on untrusted user input. Looking through the source code of a
+handful of major free software projects certainly doesn't suggest that
+we should have to lose much sleep over this. This is not even remotely
+as serious as the previously mentioned hash table attacks.
 
-Calling the BSD qsort() on a \\(2^16\\) killer input is about 1000
-times slower than on a random input of the same size. Most benchmarks
-are unlikely to test such edge cases, so it is not hard to imagine a
-scenario where this vector is exploited in a denial of service attack.
+With that said, calling the BSD qsort() on a \\(2^16\\) killer input
+is about 1000 times slower than on a random input of the same
+size. Most benchmarks are unlikely to test such edge cases, so it is
+not too hard to imagine a scenario where this vector is exploited in a
+denial of service attack.
 
-Still, if this was such big deal then we would probably see it
-happening all the time in the wild. Looking through the source code of
-a handful of major free software projects suggests that we should not
-lose too much sleep over this.
+### A "real world" example
 
-Most programmers would be
-reluctant to call qsort() on user provided input. Especially so when
-the input is not trusted.
-
-
-### An example
-
-One of the few potential issues we've found lies in how some software
+One example of a potential real world issue lies in how some software
 implements directory listings. It is common to order directory entries
-by name or timestamp and this ordering is sometimes created server
-side. At first glance it might seem completely harmless. Consider for
-instance this listing of \\(2^15\\) random entries on a FreeBSD 9.1
-box:
+by e.g. name or timestamp and it is common to create that ordering by
+calling qsort(). This applies to the venerable *ls(1)* utility and
+also to several web servers.
+
+<!-- venerable? ordering? -->
+
+<!-- *which* ls utilities does this apply to? check GNU and BSD
+coreutils, check illumos. and which web servers? what is that index
+functionality called? -->
+
+To exploit this we need the ability to create files and the ability to
+control the order in which *readdir(3)* returns directory entries. The
+latter is simplified by BSD's Unix File System (UFS), where readdir()
+effectively returns entries in the order that they were
+created. Here's the time consumption for listing \\(2^15\\) random
+entries on a FreeBSD 9.1 box:
 
     $ time ls -1 random/ > /dev/null
     
@@ -249,11 +263,9 @@ box:
     user    0m0.022s
     sys     0m0.004s
 
-Very snappy and unlikely to cause concern in a benchmark. Let's see
-what happens when we feed ls a killer input? The filesystem used on
-this particular (virtual) machine is UFS. One of its properties is
-that readdir(3) returns directory entries in the same order as they
-were created. This allows us to easily build a killer input.
+Very snappy and unlikely to cause any concern in a benchmark. Let's
+see what happens when we create and list a killer input of the same
+size:
 
     $ mkdir killer
     $ for i in $(seq -w 16384 1); do touch killer/$i; done
@@ -268,18 +280,27 @@ were created. This allows us to easily build a killer input.
 
 A pretty dramatic performance drop and almost exactly what we would
 expect. If the \\(2^16\\) killer results in a factor 1000 drop, then
-\\(2^15\\) should give about factor 250. We got factor 260 here, from
-0.022s to 5.719 user time.
+\\(2^15\\) should give about factor 250. Here we saw a drop from
+0.022s to 5.719s user time, so factor 260 slower. Similar performance
+degradation can be expected from most software that lists and sorts
+directory entries by means of readdir() and qsort().
 
-<!-- libexif qsorts on exif_data_save_data_content() -->
+Whether or not an attack based on this approach can actually be
+carried out in the wild is a question that we leave unanswered. The
+ability to create arbitrarily named files is typically reserved for
+trusted users, so perhaps not.
 
-TL;DR
-=====
+<!-- libexif qsorts on exif_data_save_data_content()? -->
 
-Plain BSD qsort() can be tricked into running insertion sort on its
-whole input with terrible performance as a consequence. There exists a
-simple technique for triggering similar behaviour in almost any
-quicksort implementation. This applies to a fair bit of software used
-in the wild, including most major libc implementations.
+Summary
+=======
 
-Over and out.
+Plain BSD qsort() can easily be tricked into running insertion sort on
+its whole input with terrible performance as a consequence. There
+exists a simple technique for triggering similar behaviour in almost
+any quicksort implementation, including those of most major libc
+implementations. Exploiting this in an algorithmic complexity attack
+in the wild is likely not trivial but can be done under certain
+circumstances.
+
+That was all. Over and out.
