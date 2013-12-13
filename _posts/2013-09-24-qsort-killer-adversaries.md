@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qsort() and its killer adversaries
+title: algorithmic complexity attacks, libc and quicksort
 location: New York
 draft: true
 ---
@@ -284,6 +284,9 @@ expect. If the \\(2^16\\) killer results in a factor 1000 drop, then
 0.022s to 5.719s user time, so factor 260 slower. Similar performance
 degradation can be expected from most software that lists and sorts
 directory entries by means of readdir() and qsort().
+
+<!-- would be nice to have an example of this being triggered through
+an httpd as well. graph of cpu utilization. -->
 
 Whether or not an attack based on this approach can actually be
 carried out in the wild is a question that we leave unanswered. The
