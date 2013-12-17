@@ -266,7 +266,7 @@ handful of major free software projects certainly doesn't suggest that
 we should have to lose much sleep over this. This is not even remotely
 as serious as the previously mentioned hash table attacks.
 
-With that said, calling the BSD qsort() on a \\(2^16\\) killer input
+With that said, calling the BSD qsort() on a 2<sup>16</sup> killer input
 is about 1000 times slower than on a random input of the same
 size. Most benchmarks are unlikely to test such edge cases, so it is
 not too hard to imagine a scenario where this vector is exploited in a
@@ -287,11 +287,12 @@ coreutils, check illumos. and which web servers? what is that index
 functionality called? -->
 
 To exploit this we need the ability to create files and the ability to
-control the order in which *readdir(3)* returns directory entries. The
-latter is simplified by BSD's Unix File System (UFS), where readdir()
-effectively returns entries in the order that they were
-created. Here's the time consumption for listing \\(2^15\\) random
-entries on a FreeBSD 9.1 box:
+control the order in which directory entries are read (e.g. by means
+of *readdir(3)* or *fts_read(3)*). The latter is simplified by BSD's
+Unix File System (UFS), where directory entries are effectively
+returned in the order that they were created. Here's the time
+consumption for listing 2<sup>15</sup> random entries on a FreeBSD 9.1
+box:
 
     $ time ls -1 random/ > /dev/null
     
@@ -315,11 +316,9 @@ size:
     sys     0m0.006s
 
 A pretty dramatic performance drop and almost exactly what we would
-expect. If the \\(2^16\\) killer results in a factor 1000 drop, then
-\\(2^15\\) should give about factor 250. Here we saw a drop from
-0.022s to 5.719s user time, so factor 260 slower. Similar performance
-degradation can be expected from most software that lists and sorts
-directory entries by means of readdir() and qsort().
+expect. If the 2<sup>16</sup> killer results in a factor 1000 drop, then
+2<sup>15</sup> should give about factor 250. Here we saw a drop from
+0.022s to 5.719s user time, so factor 260 slower.
 
 <!-- would be nice to have an example of this being triggered through
 an httpd as well. graph of cpu utilization. -->
