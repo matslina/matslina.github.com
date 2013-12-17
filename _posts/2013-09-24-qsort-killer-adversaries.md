@@ -277,14 +277,11 @@ denial of service attack.
 One example of a potential real world issue lies in how some software
 implements directory listings. It is common to order directory entries
 by e.g. name or timestamp and it is common to create that ordering by
-calling qsort(). This applies to the venerable *ls(1)* utility and
-also to several web servers.
+calling qsort(). This applies to many implementations of the venerable
+*ls(1)* utility as well as several web servers.
 
-<!-- venerable? ordering? -->
-
-<!-- *which* ls utilities does this apply to? check GNU and BSD
-coreutils, check illumos. and which web servers? what is that index
-functionality called? -->
+<!-- check GNU and BSD coreutils, check illumos. and which web
+servers? what is that index functionality called? -->
 
 To exploit this we need the ability to create files and the ability to
 control the order in which directory entries are read (e.g. by means
