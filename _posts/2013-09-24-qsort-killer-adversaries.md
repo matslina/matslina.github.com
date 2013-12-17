@@ -210,8 +210,44 @@ using mergesort and only falls back to quicksort when certain memory
 limits come into play. More on that and on the other implementations
 in the previous post.
 
-![McIlroy antiqsort killer adversaries for several quicksort based
- libc qsort()](/img/anti_montage.png)
+<table style="border:0;">
+ <tr>
+  <td>
+   <a href="/img/anti_glibc-2.17_quick.png">
+    <img src="/img/anti_glibc-2.17_quick.png" width="320">
+   </a>
+  </td>
+  <td>
+   <a href="/img/anti_lines_glibc-2.17_quick.png">
+    <img src="/img/anti_lines_glibc-2.17_quick.png" width="320">
+   </a>
+  </td>
+ </tr>
+ <tr>
+  <td>
+   <a href="/img/anti_plan9.png">
+    <img src="/img/anti_plan9.png" width="320">
+   </a>
+  </td>
+  <td>
+   <a href="/img/anti_lines_plan9.png">
+    <img src="/img/anti_lines_plan9.png" width="320">
+   </a>
+  </td>
+ </tr>
+ <tr>
+  <td>
+   <a href="/img/anti_illumos.png">
+    <img src="/img/anti_illumos.png" width="320">
+   </a>
+  </td>
+  <td>
+   <a href="/img/anti_lines_illumos.png">
+    <img src="/img/anti_lines_illumos.png" width="320">
+   </a>
+  </td>
+ </tr>
+</table>
 
 <!-- replace this with a table of client size resized images wrapped
 in hyperlinks to full sized image -->
