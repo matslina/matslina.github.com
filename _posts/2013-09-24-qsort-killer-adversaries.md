@@ -1,33 +1,33 @@
 ---
 layout: post
-title: algorithmic complexity attacks, libc and quicksort
+title: algorithmic complexity attacks against libc qsort()
 location: New York
 draft: true
 ---
 
-Algorithmic complexity attacks are denial of service attacks that
-operate by triggering algorithmic worst case behaviour. A piece of
-code that performs well in the average case can perform very poorly on
-certain inputs. The canonical example would be the widely published
-[attacks against hash table
+An *algorithmic complexity attack* is a denial of service attack that
+triggers algorithmic worst case behaviour in code that is otherwise
+expected to perform well. The canonical example would be the widely
+published [attacks against hash table
 implementations](http://www.cs.rice.edu/~scrosby/hash/CrosbyWallach_UsenixSec2003/index.html),
 where carefully crafted inputs made snappy \\(O(1)\\) operations
 deteriorate into \\(O(n)\\) time sinks. Several major programming
 language implementations and web frameworks were vulnerable.
 
-Another algorithm commonly mentioned in this context is quicksort,
-with it's average \\(O(n\log n)\\) and worst case \\(O(n^2)\\). When
-we [previously looked](/2013/05/31/qsort-shootout.html) at libc
-qsort() implementations, it became clear that while many different
-sorting algorithms are in use, quicksort is by far the most common.
-This is so for good reasons. In addition to the theoretical average
-case, quicksort performs very well in implementation. It is cache
-friendly and optimizes well. Even so, the quadratic worst case does
-look a bit scary.
+Quicksort is also commonly mentioned in this context. Its expected
+\\(O(n\log n)\\) and worst case \\(O(n^2)\\) makes it a prime
+candidate. When we [previously
+looked](/2013/05/31/qsort-shootout.html) at libc qsort()
+implementations it became clear that while many different algorithms
+are in use, quicksort is by far the most common choice. This is so for
+good reasons. In addition to the good average-case complexity,
+quicksort is cache friendly and optimizes well. Still, the quadratic
+worst case does look a bit scary.
 
-In this post we'll examine how these qsort() worst case inputs can be
-created, what they look like and how they affect the performance of a
-couple of real world libc qsort() implementations.
+In this post we'll have a look at how to trigger worst case
+performance in a couple of qsort() implementations. We'll examine what
+the inputs look like, how they can be created and how they affect
+performance.
 
 Breaking BSD
 ============
@@ -49,7 +49,9 @@ This isn't a cause for concern in and of itself. As we [saw in the
 previous post](/2013/05/31/qsort-shootout.html#results), the
 implementation performs very well and appears to have stood the test
 of time. It is particularly good on partially sorted inputs, which are
-commonly encountered in practice. 
+commonly encountered in practice.
+
+<!-- merge with previous paragraph? -->
 
 In the chart above, the FreeBSD qsort() outperforms several other
 major C libraries. We'll soon discuss why, but first a little
@@ -68,8 +70,8 @@ can expect the algorithm to run in \\(O(n\log n)\\). An ideal pivot
 selection would always pick the median element, since that produces
 perfectly balanced partitions. The worst possible pivot selection is
 that which results in highly skewed partitions; the goal of each round
-is not to shave off a few elements, the goal is to split the problem
-in half.
+is not to merely shave off a few elements, the goal is to split the
+problem in half.
 
 Selecting the true median in each round of partitioning is
 unfortunately prohibitively expensive. It [can be done in linear
@@ -85,9 +87,8 @@ like so:
 Like most of the BSD quicksort, this pivot selection is based on on
 Bentley and McIlroy's [Engineering a Sort
 Function](http://www.cs.fit.edu/~pkc/classes/writing/samples/bentley93engineering.pdf). This
-paper, which is a bit of a classic, covers many of the less obvious
-aspects of how to implement quicksort. Well worth a read if you're
-into the whole sorting thing.
+paper covers many of the less obvious aspects of how to implement
+quicksort. Well worth a read if you're into the whole sorting thing.
 
 When a partition or an original input is sufficiently small, it can
 pay off to switch to a low overhead algorithm. In the BSD case, this
@@ -126,23 +127,25 @@ The plot below visualizes this input for \\(n=64\\).
 
 Feed this into the BSD pivot selection and the element at position
 \\(n/2\\) will pop out. Since the data is already perfectly
-partitioned around this element, no other elements will be rearranged
-and qsort() will assume that it's facing a nearly sorted input and
-will then switch to insertion sort. The data is however far from
-sorted and the algorithm will exhibit catastrophic quadratic
-behaviour.
+partitioned around this element, no other elements will be rearranged,
+qsort() will assume that it's facing a nearly sorted input and will
+switch to insertion sort. The data is however far from sorted and the
+algorithm will exhibit catastrophic quadratic behaviour.
+
+Behold:
 
 ![Number of comparisons performed by BSD qsort() on random and worst
  case inputs.](/img/anti_lines_freebsd-8.1.0.png)
 
-Notice in the plot above how doubling the input size roughly
-quadruples the number of comparisons performed. This is of course the
-trademark of an \\(O(n^2)\\) algorithm.
+Notice how doubling the input size roughly quadruples the number of
+comparisons performed. This is of course the trademark of an
+\\(O(n^2)\\) algorithm.
 
 ### Only FreeBSD?
 
 <!-- TODO check most recent openbsd and dragonfly, add version numbers
 here -->
+<!-- this section is a bit crappy -->
 
 4\.4BSD Lite has many descendants. Both OpenBSD and DragonflyBSD seem
 to behave exactly like FreeBSD on these inputs. Many other software
@@ -203,12 +206,12 @@ sort function.
 
 ### McIlroy vs the world
 
-We'll also have a look at how the McIlroy adversary fares against a
-couple of other libc quicksort implementations. Bear in mind that
-quicksort is not the default code path of glibc qsort(). It prefers
-using mergesort and only falls back to quicksort when certain memory
-limits come into play. More on that and on the other implementations
-in the previous post.
+Let's have a look at how the McIlroy adversary fares against a couple
+of other libc quicksort implementations. Bear in mind that quicksort
+is not the default code path of glibc qsort(). It prefers using
+mergesort and only falls back to quicksort when certain memory limits
+come into play. More on that and on the other implementations in the
+previous post.
 
 <table style="border:0;">
  <tr>
@@ -247,6 +250,18 @@ in the previous post.
    </a>
   </td>
  </tr>
+ <tr>
+  <td>
+   <a href="/img/anti_irix-6.5.png">
+    <img src="/img/anti_irix-6.5.png" width="320">
+   </a>
+  </td>
+  <td>
+   <a href="/img/anti_lines_irix-6.5.png">
+    <img src="/img/anti_lines_irix-6.5.png" width="320">
+   </a>
+  </td>
+ </tr>
 </table>
 
 <!-- replace this with a table of client size resized images wrapped
@@ -258,7 +273,7 @@ complexity.
 Can this be exploited?
 ======================
 
-First of all, if this was such a big deal then we would probably be
+If this was such a big deal then we would probably be
 seeing algorithmic complexity attacks against qsort() all the time in
 the wild. And we don't. Very few programmers would willingly call
 qsort() on untrusted user input. Looking through the source code of a
@@ -266,10 +281,10 @@ handful of major free software projects certainly doesn't suggest that
 we should have to lose much sleep over this. This is not even remotely
 as serious as the previously mentioned hash table attacks.
 
-With that said, calling the BSD qsort() on a 2<sup>16</sup> killer input
-is about 1000 times slower than on a random input of the same
-size. Most benchmarks are unlikely to test such edge cases, so it is
-not too hard to imagine a scenario where this vector is exploited in a
+With that said, calling the BSD qsort() on a 2<sup>16</sup> killer
+input is about 1000 times slower than on a random input of the same
+size. Most benchmarks are unlikely to test such an edge case so it is
+at least conceivable that this vector might some day be exploited in a
 denial of service attack.
 
 ### A "real world" example
@@ -278,10 +293,8 @@ One example of a potential real world issue lies in how some software
 implements directory listings. It is common to order directory entries
 by e.g. name or timestamp and it is common to create that ordering by
 calling qsort(). This applies to many implementations of the venerable
-*ls(1)* utility as well as several web servers.
-
-<!-- check GNU and BSD coreutils, check illumos. and which web
-servers? what is that index functionality called? -->
+*ls(1)* utility as well as the autoindex functionality of some web
+servers.
 
 To exploit this we need the ability to create files and the ability to
 control the order in which directory entries are read (e.g. by means
