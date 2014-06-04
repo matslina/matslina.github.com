@@ -262,6 +262,19 @@ previous post.
    </a>
   </td>
  </tr>
+ <tr>
+  <td>
+   <a href="/img/anti_VS2012.png">
+    <img src="/img/anti_VS2012.png" width="320">
+   </a>
+  </td>
+  <td>
+   <a href="/img/anti_lines_VS2012.png">
+    <img src="/img/anti_lines_VS2012.png" width="320">
+   </a>
+  </td>
+ </tr>
+
 </table>
 
 <!-- replace this with a table of client size resized images wrapped
