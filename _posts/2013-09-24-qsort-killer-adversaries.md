@@ -34,13 +34,11 @@ Breaking BSD
 
 Inspecting a
 [diff](http://svnweb.freebsd.org/base/stable/9/lib/libc/stdlib/qsort.c?view=diff&r1=225736&r2=1573&diff_format=h)
-between the qsort() of 4.4BSD Lite and that of FreeBSD 9.1 reveals
+between the qsort() of 4.4BSD-Lite and that of FreeBSD 9.1 reveals
 that very little has changed since 1994. Some K&R syntax has been
 removed, some macros have been introduced, support for the reentrant
 qsort_r() has been added and a couple of variables have been
 renamed. Other than that, the code is pretty much the same.
-
-<!-- 4.4BSD Lite OR 4.4BSD-Lite ?? -->
 
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
@@ -143,11 +141,9 @@ comparisons performed. This is of course the trademark of an
 
 ### Only FreeBSD?
 
-<!-- TODO check most recent openbsd and dragonfly, add version numbers
-here -->
 <!-- this section is a bit crappy -->
 
-4\.4BSD Lite has many descendants. Both OpenBSD and DragonflyBSD seem
+4\.4BSD-Lite has many descendants. Both OpenBSD (5.5) and DragonflyBSD (3.8.0) seem
 to behave exactly like FreeBSD on these inputs. Many other software
 projects, both free and proprietary, have also incorporated this
 implementation. But not NetBSD! A [2009
@@ -343,15 +339,10 @@ expect. If the 2<sup>16</sup> killer results in a factor 1000 drop, then
 2<sup>15</sup> should give about factor 250. Here we saw a drop from
 0.022s to 5.719s user time, so factor 260 slower.
 
-<!-- would be nice to have an example of this being triggered through
-an httpd as well. graph of cpu utilization. -->
-
 Whether or not an attack based on this approach can actually be
 carried out in the wild is a question that we leave unanswered. The
 ability to create arbitrarily named files is typically reserved for
 trusted users, so perhaps not.
-
-<!-- libexif qsorts on exif_data_save_data_content()? -->
 
 Summary
 =======
