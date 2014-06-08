@@ -131,7 +131,7 @@ Notice how doubling the input size roughly quadruples the number of
 comparisons performed. This is of course the trademark of an
 \\(O(n^2)\\) algorithm.
 
-Now 4\.4BSD-Lite has many descendants and both OpenBSD (5.5) and
+4.4BSD-Lite has many descendants and both OpenBSD (5.5) and
 DragonflyBSD (3.8.0) seem to behave exactly like FreeBSD on these
 inputs. Many other software projects, both free and proprietary, have
 also incorporated this implementation. But not NetBSD! A [2009
@@ -155,9 +155,6 @@ nutshell, this article describes a simple adversarial program,
 quadratic performance. There's no point in rehashing the article - it
 really is both well-written and accessible - so let's instead have a
 look at what antiqsort can do to the NetBSD qsort().
-
-<!-- TODO replace my antiqsort with the original and regenerate the
-graphics -->
 
 ### McIlroy vs NetBSD
 
