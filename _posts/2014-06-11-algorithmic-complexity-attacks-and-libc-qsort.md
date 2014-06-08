@@ -1,6 +1,6 @@
 ---
 layout: post
-title: algorithmic complexity attacks against libc qsort()
+title: algorithmic complexity attacks and libc qsort()
 location: New York
 draft: true
 ---
