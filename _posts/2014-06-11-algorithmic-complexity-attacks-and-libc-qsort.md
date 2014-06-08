@@ -30,8 +30,8 @@ Breaking BSD
 ------------
 
 Inspecting a
-[diff](http://svnweb.freebsd.org/base/stable/9/lib/libc/stdlib/qsort.c?view=diff&r1=225736&r2=1573&diff_format=h)
-between the qsort() of 4.4BSD-Lite and that of FreeBSD 9.1 reveals
+[diff](http://svnweb.freebsd.org/base/stable/10/lib/libc/stdlib/qsort.c?r1=256281&r2=1573)
+between the qsort() of 4.4BSD-Lite and that of current day FreeBSD reveals
 that very little has changed since 1994. Some K&R syntax has been
 removed, some macros have been introduced, support for the reentrant
 qsort_r() has been added and a couple of variables have been
