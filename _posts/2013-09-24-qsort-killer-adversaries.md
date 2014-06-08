@@ -6,9 +6,9 @@ draft: true
 ---
 
 An *algorithmic complexity attack* is a denial of service attack that
-triggers algorithmic worst case behaviour in code that is otherwise
-expected to perform well. The canonical example would be the widely
-published [attacks against hash table
+triggers worst case behaviour in code that is otherwise expected to
+perform well. The canonical example would be the widely published
+[attacks against hash table
 implementations](http://www.cs.rice.edu/~scrosby/hash/CrosbyWallach_UsenixSec2003/index.html),
 where carefully crafted inputs made snappy \\(O(1)\\) operations
 deteriorate into \\(O(n)\\) time sinks. Several major programming
@@ -20,17 +20,14 @@ candidate. When we [previously
 looked](/2013/05/31/qsort-shootout.html) at libc qsort()
 implementations it became clear that while many different algorithms
 are in use, quicksort is by far the most common choice. This is so for
-good reasons. In addition to the good average-case complexity,
-quicksort is cache friendly and optimizes well. Still, the quadratic
-worst case does look a bit scary.
+good reasons. In addition to the average-case complexity, quicksort is
+cache friendly and optimizes well.
 
 In this post we'll have a look at how to trigger worst case
-performance in a couple of qsort() implementations. We'll examine what
-the inputs look like, how they can be created and how they affect
-performance.
+performance in a couple of libc qsort() implementations.
 
 Breaking BSD
-============
+------------
 
 Inspecting a
 [diff](http://svnweb.freebsd.org/base/stable/9/lib/libc/stdlib/qsort.c?view=diff&r1=225736&r2=1573&diff_format=h)
@@ -43,17 +40,14 @@ renamed. Other than that, the code is pretty much the same.
 ![Number of comparisons per qsort() implementation when sorting 2^22
  increasing elements.](/img/max_inc.png)
 
-This isn't a cause for concern in and of itself. As we [saw in the
+This isn't a cause for concern in and of itself. As we saw in [the
 previous post](/2013/05/31/qsort-shootout.html#results), the
 implementation performs very well and appears to have stood the test
 of time. It is particularly good on partially sorted inputs, which are
-commonly encountered in practice.
-
-<!-- merge with previous paragraph? -->
-
-In the chart above, the FreeBSD qsort() outperforms several other
-major C libraries. We'll soon discuss why, but first a little
-background on quicksort and how BSD has implemented it.
+commonly encountered in practice, and in the chart above it
+outperforms several other major C libraries. We'll soon discuss why,
+but first a little background on quicksort and how BSD has implemented
+it.
 
 ### Quicksort 101
 
@@ -130,8 +124,6 @@ qsort() will assume that it's facing a nearly sorted input and will
 switch to insertion sort. The data is however far from sorted and the
 algorithm will exhibit catastrophic quadratic behaviour.
 
-Behold:
-
 ![Number of comparisons performed by BSD qsort() on random and worst
  case inputs.](/img/anti_lines_freebsd-8.1.0.png)
 
@@ -139,14 +131,10 @@ Notice how doubling the input size roughly quadruples the number of
 comparisons performed. This is of course the trademark of an
 \\(O(n^2)\\) algorithm.
 
-### Only FreeBSD?
-
-<!-- this section is a bit crappy -->
-
-4\.4BSD-Lite has many descendants. Both OpenBSD (5.5) and DragonflyBSD (3.8.0) seem
-to behave exactly like FreeBSD on these inputs. Many other software
-projects, both free and proprietary, have also incorporated this
-implementation. But not NetBSD! A [2009
+Now 4\.4BSD-Lite has many descendants and both OpenBSD (5.5) and
+DragonflyBSD (3.8.0) seem to behave exactly like FreeBSD on these
+inputs. Many other software projects, both free and proprietary, have
+also incorporated this implementation. But not NetBSD! A [2009
 commit](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/stdlib/qsort.c?rev=1.20&content-type=text/x-cvsweb-markup&only_with_tag=MAIN)
 removed the switch to insertion sort, citing "*catastrophic
 performance for certain inputs*". Similar modifications can be found
@@ -155,15 +143,10 @@ e.g. [PostgreSQL](http://git.postgresql.org/gitweb/?p=postgresql.git;a=blob;f=sr
 and
 [OSX](http://www.opensource.apple.com/source/Libc/Libc-763.11/stdlib/qsort-fbsd.c).
 
-It is important to not exaggerate the significance of this particular
-behaviour. After all, it only produces quadratic complexity and that's
-asymptotically no worse than the regular worst case. BSD qsort() is
-still a very fine quicksort.
-
 Breaking almost any quicksort
-=============================
+-----------------------------
 
-The same [McIlroy]((http://www.cs.dartmouth.edu/~doug/) who
+The same [McIlroy](http://www.cs.dartmouth.edu/~doug/) who
 co-authored *Engineering a sort function* (the article mentioned
 above; the one you should read) also wrote [A Killer Adversary for
 Quicksort](http://www.cs.dartmouth.edu/~doug/mdmspe.pdf). In a
@@ -273,22 +256,17 @@ previous post.
 
 </table>
 
-<!-- replace this with a table of client size resized images wrapped
-in hyperlinks to full sized image -->
-
 Some inputs are beautiful. Some aren't. They all trigger quadratic
 complexity.
 
 Can this be exploited?
-======================
+----------------------
 
-If this was such a big deal then we would probably be
-seeing algorithmic complexity attacks against qsort() all the time in
-the wild. And we don't. Very few programmers would willingly call
-qsort() on untrusted user input. Looking through the source code of a
-handful of major free software projects certainly doesn't suggest that
-we should have to lose much sleep over this. This is not even remotely
-as serious as the previously mentioned hash table attacks.
+If this was such a big deal then we would probably be seeing
+algorithmic complexity attacks against qsort() all the time in the
+wild. And we don't. Very few programmers would willingly call qsort()
+on untrusted user input. This is not even remotely as serious as the
+previously mentioned hash table attacks.
 
 With that said, calling the BSD qsort() on a 2<sup>16</sup> killer
 input is about 1000 times slower than on a random input of the same
@@ -345,7 +323,7 @@ ability to create arbitrarily named files is typically reserved for
 trusted users, so perhaps not.
 
 Summary
-=======
+-------
 
 Plain BSD qsort() can easily be tricked into running insertion sort on
 its whole input with terrible performance as a consequence. There
