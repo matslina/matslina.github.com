@@ -146,13 +146,15 @@ and
 Breaking almost any quicksort
 -----------------------------
 
-The same [McIlroy](http://www.cs.dartmouth.edu/~doug/) who
-co-authored *Engineering a sort function* (the article mentioned
-above; the one you should read) also wrote [A Killer Adversary for
+The same [McIlroy](http://www.cs.dartmouth.edu/~doug/) who co-authored
+*Engineering a sort function* (the article mentioned above; the one
+you should read) also wrote [A Killer Adversary for
 Quicksort](http://www.cs.dartmouth.edu/~doug/mdmspe.pdf). In a
 nutshell, this article describes a simple adversarial program,
 *antiqsort*, that reduces almost any quicksort implementation to
-quadratic performance. There's no point in rehashing the article - it
+quadratic performance. If an implementation is susceptible, then
+simply linking against libc and running once is sufficient to produce
+a worst case input. But there's no point in rehashing the article - it
 really is both well-written and accessible - so let's instead have a
 look at what antiqsort can do to the NetBSD qsort().
 
