@@ -9,7 +9,7 @@ An *algorithmic complexity attack* is a denial of service attack that
 triggers worst case behaviour in code that is otherwise expected to
 perform well. The canonical example would be the widely published
 [attacks against hash table
-implementations](http://www.cs.rice.edu/~scrosby/hash/CrosbyWallach_UsenixSec2003/index.html),
+implementations](http://dl.acm.org/citation.cfm?id=1251356),
 where carefully crafted inputs made snappy \\(O(1)\\) operations
 deteriorate into \\(O(n)\\) time sinks. Several major programming
 language implementations and web frameworks were vulnerable.
@@ -319,8 +319,8 @@ carried out in the wild is a question that we leave unanswered. The
 ability to create arbitrarily named files is typically reserved for
 trusted users, so perhaps not.
 
-Summary
--------
+TL;DR
+-----
 
 Plain BSD qsort() can easily be tricked into running insertion sort on
 its whole input with terrible performance as a consequence. There
