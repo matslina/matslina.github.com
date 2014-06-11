@@ -2,7 +2,7 @@
 layout: post
 title: algorithmic complexity attacks and libc qsort()
 location: New York
-draft: true
+draft: false
 ---
 
 An *algorithmic complexity attack* is a denial of service attack that
