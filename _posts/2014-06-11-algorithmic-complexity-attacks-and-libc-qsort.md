@@ -44,7 +44,7 @@ This isn't a cause for concern in and of itself. As we saw in [the
 previous post](/2013/05/31/qsort-shootout.html#results), the
 implementation performs very well and appears to have stood the test
 of time. It is particularly good on partially sorted inputs, which are
-commonly encountered in practice, and in the chart above it
+commonly encountered in practice. In the chart above it
 outperforms several other major C libraries. We'll soon discuss why,
 but first a little background on quicksort and how BSD has implemented
 it.
@@ -76,7 +76,7 @@ like so:
                    median(v[n/2 - n/8], v[n/2],       v[n/2 + n/8]),
                    median(v[n-1 - n/4], v[n-1 - n/8], v[n-1]))
 
-Like most of the BSD quicksort, this pivot selection is based on on
+Like most of the BSD quicksort, this pivot selection is based on
 Bentley and McIlroy's [Engineering a Sort
 Function](http://www.cs.fit.edu/~pkc/classes/writing/samples/bentley93engineering.pdf). This
 paper covers many of the less obvious aspects of how to implement
@@ -87,7 +87,7 @@ pay off to switch to a low overhead algorithm. In the BSD case, this
 algorithm is [insertion
 sort](http://en.wikipedia.org/wiki/Insertion_sort) and it is chosen
 whenever \\(n\lt 7\\). While the time complexity of insertion sort is
-quadratic, its low constant factors makes it really shine on such
+quadratic, its low constant factor makes it really shine on such
 small inputs. Now this is all well and good, but BSD goes one step
 further.
 
@@ -151,7 +151,7 @@ The same [McIlroy](http://www.cs.dartmouth.edu/~doug/) who co-authored
 you should read) also wrote [A Killer Adversary for
 Quicksort](http://www.cs.dartmouth.edu/~doug/mdmspe.pdf). In a
 nutshell, this article describes a simple adversarial program,
-*antiqsort*, that reduces almost any quicksort implementation to
+*antiqsort*, which reduces almost any quicksort implementation to
 quadratic performance. If an implementation is susceptible, then
 simply linking against libc and running once is sufficient to produce
 a worst case input. But there's no point in rehashing the article - it
