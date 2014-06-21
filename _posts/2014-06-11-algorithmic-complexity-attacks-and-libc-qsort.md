@@ -333,3 +333,7 @@ in the wild is likely not trivial but is under certain circumstances
 conceivable.
 
 That was all. Over and out.
+
+**See also:** Discussions on [hacker
+news](https://news.ycombinator.com/item?id=7878012) and
+[proggit](http://www.reddit.com/r/programming/comments/27vky1/algorithmic_complexity_attacks_and_libc_qsort/)
