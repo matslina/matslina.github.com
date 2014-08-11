@@ -29,7 +29,12 @@ assume that each memory cell has 8 bits or more. All cells are
 initially set to 0. There are 8 single character instructions that
 manipulate either the pointer or the cell at which the pointer points.
 
-INSERT ILLUSTRATIVE SKETCH OF A BF TURING MACHINE HERE
+    +---+---+---+---+---+---+-----
+    | 0 | 0 | 0 | 0 | 0 | 0 | ...
+    +---+---+---+---+---+---+-----
+      ^
+
+<!-- will prettify that diagram -->
 
 A straightforward way of explaining the brainfuck instruction set is
 to translate it into a more widely known language such as Java. If we
@@ -112,7 +117,15 @@ couple of optimizations. Control is then handed over to the
 appropriate backend which translates the IR into executable binaries
 or into another programming language.
 
-INSERT ILLUSTRATIVE DIAGRAM OF AWIBS FE AND BE HERE
+              +------- awib ---------------------------------------+
+              |    +----------+     +-----------+     +---------+  |
+    brainfuck |    |          | IR  |           | IR  |         |  | executable
+    -----------+-->| Frontend |---->| Optimizer |---->| Backend |--+------------>
+              |    |          |     |           |     |         |  |
+              |    +----------+     +-----------+     +---------+  |
+              +----------------------------------------------------+
+
+<!-- will prettify that diagram -->
 
 <!-- Restructure this paragraph. Is "optimization" the best term? -->
 The IR itself is like brainfuck on steroids. Instead of the +
@@ -242,7 +255,11 @@ stack below the IR and letting it grow towards the IR. Every IR
 operation processed frees up 2 cells of stack space and since we at
 most push 2 cells per operation, we're good.
 
-ILLUSTRATION
+    +---------------+---+---+---+-   -+---+---+------------+
+    | stack segment | 0 | 1 | 1 | ... | 1 | 0 | IR segment |
+    +---------------+---+---+---+-   -+---+---+------------+
+
+<!-- will prettify that diagram -->
 
 We use a "1-sled" for the area between the stack and the remaining
 code. The sled allows us to move from the code area to the stack using
