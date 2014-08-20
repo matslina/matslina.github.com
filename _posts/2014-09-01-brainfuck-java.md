@@ -98,18 +98,21 @@ programs can be hard.
 
 ## Awib is a brainfuck compiler written in brainfuck
 
-<!-- this paragraph confuses -->
-Among the (infinitely) many computational problems brainfuck can
-solve, we find the problem of brainfuck compilation: given a brainfuck
-program as input, produce an executable representation of the program
-as output. The awib compiler does precisely that; it’s a brainfuck
-compiler written in in brainfuck.
+A great way of grokking the brainfuck language is to implement it. The
+process of writing a compiler or an interpreter makes both syntax and
+semantics a lot clearer. When you think about it, should it not be
+even more educational to write the compiler itself in brainfuck?
+Perhaps not a bullet proof argument, but that's what led to the
+creation of awib. It's a brainfuck compiler written in brainfuck.
 
-<!-- nf suggested mentioning GCC as example -->
 Compilers are commonly composed of one or more frontends and one or
-more backends. The frontends accept source code as input and produce
-an intermediary representation (IR) as output. The backends accept IR
-as input and produces executable programs as output.
+more backends. The frontends accept source code as input and produces
+an intermediary representation (IR) as output. The backends in turn
+accept IR as input and produces executable programs as
+output. Commonly there will also be an optimization step between
+frontend and backend. GCC is a great example of a compiler structured
+like this; it has frontends for e.g. C, C++ and Fortran; it has
+backends for e.g. arm, sparc and i386.
 
 The awib compiler is structured in the same way. The frontend reads
 brainfuck source code from stdin, translates it into IR and performs a
@@ -127,22 +130,21 @@ or into another programming language.
 
 <!-- will prettify that diagram -->
 
-<!-- Restructure this paragraph. Is "optimization" the best term? -->
-The IR itself is like brainfuck on steroids. Instead of the +
-instruction, which increments the current cell by 1, awib’s IR
-features the ADD() instruction. One of awib’s optimizations consists
-of contracting multiple adjacent "+" instructions into a single
-ADD(x). Similar optimizations exist for instructions like subtraction
-and for moving the pointer.
+Awib's IR itself is like brainfuck on steroids; it operates on the
+same memory model but is much more expressive. A good example is the
+IR instruction ADD(). When presented with a sequence of lets say 5
+adjacent "+" instructions, awib's frontend will pass on the IR
+instruction ADD(5). Similar instructions of course exists for
+subtraction ("-") and for moving the pointer (">" and "<").
 
-<!-- Not sure the example at the end is very illuminating. -->
 Although compiling brainfuck to i386 Linux executables is a pretty
-hairy process which makes the 386_linux backend a tad complex, many of
-the other backends are conceptually simple. The Ruby, Go, Tcl and C
-backends operate by iterating over the IR. For each instruction the
-compiler will output a single piece of code and in some cases also the
-decimal representation of its argument. E.g., the C backend translates
-the instruction <code>ADD(47)</code> into <code>*p+=47;</code>.
+hairy process - and the 386_linux backend certainly is a tad complex -
+many of the backends are conceptually simple. The Ruby, Go, Tcl and C
+backends operate by iterating over the IR in a single pass. For each
+instruction the compiler will output a single piece of code and in
+some cases also the decimal representation of the instruction's
+argument. E.g., the C backend translates the instruction
+<code>ADD(47)</code> into <code>*p+=47;</code>.
 
 ## Naively failing
 
@@ -179,22 +181,46 @@ several other Java code generators have been affected by this limit
 over the years and it’s unlikely to disappear anytime soon. We need a
 different approach.
 
-## A method for splitting methods
-
 The path forward is clear: we must break up our program into multiple
 methods and somehow have them be invoked in the correct order. We have
 immediately been moved from the happy land of trivial IR to Java
 mappings to someplace worse.
 
-<!-- do a better job motivating why this approach is bad -->
+## Brainfuck makes life hard
 
-Creating a separate method for all larger loop bodies is an option
-that would be acceptable in most programming language. Implementing
-that in brainfuck is another story. It would potentially be too memory
-consuming, would require some non-trivial data structures and would
-certainly require multiple passes over the IR.
+The horror of brainfuck is also the beauty of brainfuck. Implementing
+the simplest thing can be a pain in the neck but the end result is
+often like a work of art. Here are some of the brainfuck-specific
+hurdles with implementing the aforementioned approach.
 
-Here's an alternate approach:
+### A method for splitting methods
+
+One option for circumventing the 64k limit is to simply create a new
+method for each loop body encountered. Implementing this would be a
+piece of cake in most programming languages: compile non-loop
+instructions as usual, recursively compile loop bodies, attach the
+compiled loops to a list of methods and finally append these method
+declarations at the end of the output before returning.
+
+<!--
+    function compile(input):
+        methods = list()
+        for i = 0; i < input.size(); i++:
+            ...
+            if input[i] == [
+                end = find_end_of_loop(input, i)
+                methods.append(compile(input[i ... end]))
+-->
+
+Alas, brainfuck does not support recursion and maintaining the method
+list will require a lot of scanning back and forth over the memory
+area (no random memory access in brainfuck, remember?) Turning the
+recursive implementation into an iterative one would require
+introducing a stack, adding further complexity.
+
+What we want is a way of compiling the IR into Java in a single pass,
+without copying code around and only using very simple data
+structures. Here's one way to do it:
 
     count = 1
     for op in input
@@ -217,63 +243,107 @@ This executes in a single pass over the IR and only requires us to
 maintain a counter and a stack of integers (previous counter
 values). Much more brainfuck-friendly.
 
-## Brainfuck makes life hard
-
-The horror of brainfuck is also the beauty of brainfuck. Implementing
-the simplest thing can be a pain in the neck but the end result is
-often like a work of art. Here are some of the brainfuck-specific
-hurdles with implementing the aforementioned approach.
-
 ### Representing large integers
 
-Since we can't assume cells to be larger than 8 bits, we have to
-expect individual cells to count to at most 255 (2<sup>8</sup>). Every
-loop we encounter will result in 2 methods being created, so if the
-counter and stack frames are single cells then we can at most compile
-127 loops. No good.
+As mentioned, cells in the memory area can't be assumed to be larger
+than 8 bits, so a single cell counter can not be expected to count
+beyond 255 (2<sup>8</sup>-1). The chosen algorithm will increment the
+counter twice for each loop encountered so single cell counters won't
+allow more than 127 loops being compiled. Not nearly enough for
+anything but the smallest of programs.
 
-Consequently, the counter and the stack frames must span multiple
-ells. Using 2 cells gives us at least 16 bits, which allows for just
-over 32000 loops per program. That should be enough for everyone.
+Our counters must span multiple cells and it seems as if two cells,
+giving us 16 bits, should do the trick. 32767 ((2<sup>16</sup>-1) / 2)
+loops ought to be enough for anybody, no?
 
-THIS IS THE POINT BEYOND WHICH EVERYTHING IS A BRAIN
-DUMP / RANDOM THOUGHTS / GIBBERISH.
+The most straighforward way to implement this is to start both cells
+at 0 and on each increment check if the least significant cell holds
+255. If it does then we reset it to 0 and increment the most
+significant cell. If it does not then incrementing the least
+significant cell is enough.
 
-### Printing in base 10
+    function increment(hi, lo):
+        if lo < 255:
+            return (hi, lo + 1)
+        return (hi + 1, 0)
 
-Expressing an integer's decimal representation in ascii is not too
-difficult in brainfuck. Awib uses a simple snippet of 240 instructions
-in several places but this doesn't support printing a 16-bit integer
-spanning two cells. Here we chose a simple workaround by just printing
-the two values separately with a delimiting underscore character.
+In practice, always having to do a comparison against 255 becomes
+annoyingly expensive. Brainfuck only allows us to check if cells are
+zero or non-zero, so checking for an non-zero value X requires first
+subtracting X from the cell, then checking for zero, then restoring
+the cell's original value. An easier approach is to initialize the
+counters to 255 and decrement instead of incrementing:
+
+    function decrement(hi, lo):
+        if lo != 0:
+            return (hi, lo - 1)
+        return (hi - 1, 255)
+
+The difference may appear subtle in our high-level pseudo code, but it
+makes a real difference when implementing in brainfuck:
+
+    +<-[>-]>[>]<[+++++++++++++++[-<++++++++++++++++>]<-<->>]
+
+Beautiful. This is actually a little bit different from the pseudo
+code decrement. Deciphering precisely how is left as an exercise to
+the reader.
 
 ### Storing the stack
 
-In a random access model, implementing a stack is pretty
-straightforward. More tricky in brainfuck. We ended up storing the
-stack below the IR and letting it grow towards the IR. Every IR
-operation processed frees up 2 cells of stack space and since we at
-most push 2 cells per operation, we're good.
+Implementing a stack in a random access memory model is
+straightforward: maintain an array of stack frames and use an integer
+variable to keep track of where the top frame resides. A stack push
+means incrementing the integer and writing a frame; a stack pop means
+reading a frame and decrementing the integer.
+
+Brainfuck's memory model changes some things. The lack of random
+access makes the stack top variable redundant and the lack of dynamic
+memory allocation requires us to dedicate a stack segment of the
+memory area ourselves. We also need to make sure that the stack can
+grow a fair bit to allow for the compilation of programs with many
+levels of nested loops.
 
     +---------------+---+---+---+-   -+---+---+------------+
     | stack segment | 0 | 1 | 1 | ... | 1 | 0 | IR segment |
     +---------------+---+---+---+-   -+---+---+------------+
 
-<!-- will prettify that diagram -->
+The diagram above illustrates awib's memory layout in this phase of
+the compilation. Each IR instruction is two cells or larger so
+processing an instruction effectively frees up two cells for the stack
+segment. Since each stack frame spans two cells, this guarantees that
+the stack won't expand into and ruin the IR segment.
 
-We use a "1-sled" for the area between the stack and the remaining
-code. The sled allows us to move from the code area to the stack using
+Most instructions processed will not be loops, so we can expect the
+area between the IR and the stack to grow larger and larger. We won't
+be able to move the pointer to the stack using a constant number of
+'<' instructions. One option would be to maintain a counter of the
+number of cells between the two segment and use that to maneuver
+between the segments. An easier solution is to fill the gap with
+non-zero cells, in our case 1's, so that we can traverse the gap using
 a simple brainfuck idiom:
 
     [<]
 
-This code opens a loop, moves the pointer a single step left and then
-closes the loop. Since brainfuck loops only terminate when the cell
-currently pointed at is zero, the loop will end up moving the pointer
-leftwards repeatedly until the cell left of the 1-sled holding zero is
-reached.
+This snippet opens a loop, moves the pointer a single step left and
+then closes the loop. Since brainfuck loops only terminate when the
+cell currently pointed at is zero, the loop will move the pointer
+leftwards over the gap until the cell holding 0 is reached. Replacing
+the '<' with a '>' can obviously be used to move back to the IR
+segment.
 
 ## Where did this get us?
 
-Putting all the pieces together resulted in an awib backend that
-appears to function as it should. \o/
+Putting all this together resulted in an awib backend that appears to
+function as it should. It passes all of awib's unit and system tests
+and successfully compiles awib itself. The commented source code of
+the backend is available
+[here](https://github.com/matslina/awib/blob/master/lang_java/backend.b).
+
+To try it out, just download [awib-0.4.b](broken link) and follow the
+instructions in the file. Awib is, as of version 0.2, polyglot in C,
+Tcl and bash so you can easily bootstrap it locally without installing
+any other brainfuck interpreter or compiler. Remember to prepend the
+string "@lang_java" to your brainfuck code to instruct awib to use the
+Java backend.
+
+That was all. Thanks for reading.
