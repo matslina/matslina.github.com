@@ -6,11 +6,11 @@ draft: true
 ---
 
 When your primary goal in language design is to enable the
-construction of a really tiny compiler, then there’s a good chance
-you’ll end up with something like brainfuck. This is a minimalistic
-and slightly weird language. Most who attempt to program in it will
-agree that it is aptly named. But brainfuck is also turing-complete
-and as such capable of solving any and all computational problems.
+construction of a really tiny compiler, there’s a good chance you’ll
+end up with something like brainfuck. This is a minimalistic and
+slightly weird language. Most who attempt to program in it will agree
+that it is aptly named. But brainfuck is also turing-complete and as
+such capable of solving any and all computational problems.
 
 Awib is a brainfuck compiler written entirely in brainfuck. It has
 multiple compiler backends making it capable of compiling brainfuck to
