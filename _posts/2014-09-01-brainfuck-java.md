@@ -14,7 +14,7 @@ such capable of solving any and all computational problems.
 
 Awib is a brainfuck compiler written entirely in brainfuck. It has
 multiple compiler backends making it capable of compiling brainfuck to
-well performing executables (Linux IA32 ELF) as well as to several
+well-performing executables (Linux IA32 ELF) as well as to several
 programming languages (C, Tcl, Ruby and Go).
 
 In this post we’ll have a look at some of the challenges involved in
@@ -106,9 +106,9 @@ Perhaps not a bullet proof argument, but that's what led to the
 creation of awib. It's a brainfuck compiler written in brainfuck.
 
 Compilers are commonly composed of one or more frontends and one or
-more backends. The frontends accept source code as input and produces
+more backends. The frontends accept source code as input and produce
 an intermediary representation (IR) as output. The backends in turn
-accept IR as input and produces executable programs as
+accept IR as input and produce executable programs as
 output. Commonly there will also be an optimization step between
 frontend and backend. GCC is a great example of a compiler structured
 like this; it has frontends for e.g. C, C++ and Fortran; it has
@@ -256,7 +256,7 @@ Our counters must span multiple cells and it seems as if two cells,
 giving us 16 bits, should do the trick. 32767 ((2<sup>16</sup>-1) / 2)
 loops ought to be enough for anybody, no?
 
-The most straighforward way to implement this is to start both cells
+The most straightforward way to implement this is to start both cells
 at 0 and on each increment check if the least significant cell holds
 255. If it does then we reset it to 0 and increment the most
 significant cell. If it does not then incrementing the least
