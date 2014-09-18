@@ -34,8 +34,6 @@ manipulate either the pointer or the cell at which the pointer points.
     +---+---+---+---+---+---+-----
       ^
 
-<!-- will prettify that diagram -->
-
 A straightforward way of explaining the brainfuck instruction set is
 to translate it into a more widely known language such as Java. If we
 start off by declaring the memory area and the pointer like this:
@@ -127,8 +125,6 @@ or into another programming language.
               |    |          |     |           |     |         |  |
               |    +----------+     +-----------+     +---------+  |
               +----------------------------------------------------+
-
-<!-- will prettify that diagram -->
 
 Awib's IR itself is like brainfuck on steroids; it operates on the
 same memory model but is much more expressive. A good example is the
