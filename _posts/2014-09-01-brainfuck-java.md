@@ -56,7 +56,7 @@ Then the brainfuck instruction set can be defined like this:
 </tr>
 <tr>
  <td style="text-align: center;"><code>-</code></td>
- <td>Move pointer 1 cell leftwards</td>
+ <td>Decrement the cell currently pointer at</td>
  <td><code>mem[p] -= 1;</code></td>
 </tr>
 <tr>
