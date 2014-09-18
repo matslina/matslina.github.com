@@ -337,13 +337,14 @@ Putting all this together resulted in an awib backend that appears to
 function as it should. It passes all of awib's unit and system tests
 and successfully compiles awib itself. The commented source code of
 the backend is available
-[here](https://github.com/matslina/awib/blob/master/lang_java/backend.b).
+[here](https://code.google.com/p/awib/source/browse/trunk/lang_java/backend.b?spec=svn117&r=116).
 
-To try it out, just download [awib-0.4.b](broken link) and follow the
-instructions in the file. Awib is, as of version 0.2, polyglot in C,
-Tcl and bash so you can easily bootstrap it locally without installing
-any other brainfuck interpreter or compiler. Remember to prepend the
-string "@lang_java" to your brainfuck code to instruct awib to use the
-Java backend.
+To try it out, just download
+[awib-0.4.b](http://awib.googlecode.com/svn/builds/awib-0.4.b) and
+follow the instructions in the file. Awib is, as of version 0.2,
+polyglot in C, Tcl and bash so you can easily bootstrap it locally
+without installing any other brainfuck interpreter or
+compiler. Remember to prepend the string "@lang_java" to your
+brainfuck code to instruct awib to use the Java backend.
 
 That was all. Thanks for reading.
