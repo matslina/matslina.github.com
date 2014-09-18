@@ -26,17 +26,18 @@ Brainfuck’s computational model is simple. There is a contiguous
 memory area of *cells* and a *pointer* into said memory. Although the
 exact size can differ between implementations, it is generally safe to
 assume that each memory cell has 8 bits or more. All cells are
-initially set to 0. There are 8 single character instructions that
-manipulate either the pointer or the cell at which the pointer points.
+initially set to 0.
 
     +---+---+---+---+---+---+-----
     | 0 | 0 | 0 | 0 | 0 | 0 | ...
     +---+---+---+---+---+---+-----
       ^
 
-A straightforward way of explaining the brainfuck instruction set is
-to translate it into a more widely known language such as Java. If we
-start off by declaring the memory area and the pointer like this:
+There are 8 single character instructions that manipulate either the
+pointer or the cell at which the pointer points. A straightforward way
+of explaining the brainfuck instruction set is to translate it into a
+more widely known language, such as Java. If we start off by declaring
+the memory area and the pointer like this:
 
     int p = 0;
     byte[] mem = new byte[65536];
