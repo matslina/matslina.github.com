@@ -83,7 +83,7 @@ Then the brainfuck instruction set can be defined like this:
 <tr>
  <td style="text-align: center;"><code>[</code></td>
  <td>If the current cell is non-zero then enter a loop</td>
- <td><code>while (mem[p]) {</code></td>
+ <td><code>while (mem[p]!=0) {</code></td>
 </tr>
 <tr>
  <td style="text-align: center;"><code>]</code></td>
