@@ -345,3 +345,8 @@ compiler. Remember to prepend the string "@lang_java" to your
 brainfuck code to instruct awib to use the Java backend.
 
 That was all. Thanks for reading.
+
+-
+
+*This article was originally published at [Hakka
+ Labs](http://www.hakkalabs.co/articles/compiling-brainfuck-to-java-in-brainfuck).*
