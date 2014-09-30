@@ -2,7 +2,7 @@
 layout: post
 title: compiling brainfuck to java in brainfuck
 location: New York
-draft: true
+draft: false
 ---
 
 When your primary goal in language design is to enable the
