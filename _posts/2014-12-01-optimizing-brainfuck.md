@@ -108,14 +108,14 @@ pointer having been set up properly, e.g. like this:
 
 In order to meaningfully evaluate the impact different optimization
 techniques can have on performance, we need a set of brainfuck
-programs are sufficiently non-trivial for optimization to actually
-make sense. Here are a few such programs.
+programs that are sufficiently non-trivial for optimization to make
+sense.
 
 [factor.b](http://www.muppetlabs.com/~breadbox/bf/factor.b.txt)
 : Brian Raiter's excellent factoring program breaks arbitrarily large integers into their prime factors. In our benchmarks we run it with the number 133333333333337 as input, which factors into 397, 1279 and 262589699.
 
 [awib-0.4.b](http://brokenlink/)
-: [Awib](http://code.google.com/p/awib/), by yours truly, is a brainfuck compiler written in brainfuck. In our benchmarks we run awib-0.4 with itself as input using the lang_java backend. In other words, it compiles itself from brainfuck into the Java programming language.
+: [Awib](http://code.google.com/p/awib/), by yours truly, is a brainfuck compiler written in brainfuck. In our benchmarks we run awib-0.4 with itself as input using the lang_java backend. In other words: it compiles itself from brainfuck into the Java programming language.
 
 [mandelbrot.b](http://esoteric.sange.fi/brainfuck/utils/mandelbrot/mandelbrot.b)
 : Erik Bosman's mandelbrot implementation generates a 128x48 ascii graphics mandelbrot fractal. No input required here.
@@ -124,31 +124,33 @@ make sense. Here are a few such programs.
 : This [towers of hanoi solver](http://www.clifford.at/bfcpu/hanoi.html) was created by Clifford Wolf. He used a higher-level language which was then compiled into brainfuck code. No input here either.
 
 [dbfi.b](http://www.hevanet.com/cristofd/bf/dbfi.b)
-: Daniel Cristofani's dbfi is a brainfuck interpreter written in brainfuck. In our benchmark we run it with very special input: we let it interpret a copy of itself, which in turn interprets a dummy program called [hi123](http://mazonka.com/brainf/hi123). This somewhat confusing setup is sometimes referred to as sisihi123 and was used e.g. by Oleg Mazonka when [benchmarking his interpreter, bff4](http://mazonka.com/brainf/).
+: Daniel Cristofani's dbfi is a brainfuck interpreter written in brainfuck. In our benchmark we run it with a very special input: we let it interpret a copy of itself, which in turn interprets a dummy program called [hi123](http://mazonka.com/brainf/hi123). This somewhat confusing setup is sometimes referred to as sisihi123 and was used e.g. by Oleg Mazonka when [benchmarking his interpreter, bff4](http://mazonka.com/brainf/).
 
 [long.b](http://mazonka.com/brainf/long.b)
-: This is a dummy program that does nothing useful but takes a while to run. It also appear to have been created by Mazonka for benchmarking purposes.
+: Our sixth program is a dummy program that does nothing useful but takes a while to run. It also appears to have been created by Mazonka for benchmarking purposes.
 
 Making things faster
 ====================
 
-Let's look at how we can "reduce to a minimum the time necessary for
-completing the[se] calculation[s]".
+So, how can we "reduce to a minimum the time necessary for completing
+the calculation"?
 
 Throughout this post we'll look at how different optimizations affect
-the execution time of these programs. The brainfuck code is compiled
-to C code which in turn is compiled with gcc 4.8.2. We use
+the execution time of our 6 sample programs. The brainfuck code is
+compiled to C code which in turn is compiled with gcc 4.8.2. We use
 optimization level 0 (-O0) to make sure we benefit as little as
 possible from gcc's optimization engine. Run time is then measured as
 average real time over 10 runs on a Lenovo x240 under Ubuntu Trusty.
 
 ### Clear loops
 
+<!-- get some stats on how common it is in the sample programs -->
+
 A common idiom in brainfuck is the clear loop: <code>[-]</code>. This
-loop subtracts 1 from the current cell until it reaches zero and is
-consequently used to clear cells. Executed naively, the clear loop's
-runtime is potentially proportional to the maximum value that a cell
-can hold (commonly 255).
+loop subtracts 1 from the current cell an keeps iterating until the
+cell reaches zero. Executed naively, the clear loop's runtime is
+potentially proportional to the maximum value that a cell can hold
+(commonly 255).
 
 We can do better. Let's introduce a <code>Clear</code> operation to
 the IR.
