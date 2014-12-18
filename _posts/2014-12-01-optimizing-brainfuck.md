@@ -29,16 +29,16 @@ to [the previous post](/2014/09/30/brainfuck-java.html) where we cover
 both the basics of the language and some of the issues encountered
 when writing a brainfuck-to-java compiler in brainfuck. With that
 said, most of this post should be grokkable even without prior
-experience of brainfuck.
+experience of the language.
 
 ### Programs worth optimizing
 
 In order to meaningfully evaluate the impact different optimization
-techniques can have on performance, we need a set of brainfuck
+techniques can have, we need a set of brainfuck
 programs that are sufficiently non-trivial for optimization to make
 sense. Unsurprisingly, most brainfuck programs out there are pretty
 darn trivial, but there are some exceptions. In this post we'll be
-using six such programs.
+looking at six such programs.
 
 The interested reader is encouraged to head over to [this
 repository](https://github.com/matslina/bfoptimization) for a more
@@ -229,8 +229,8 @@ immediately adjacent <code>&gt;</code>, <code>+</code>,
 <code>&lt;</code> or <code>-</code>. Lingering around 40% we have
 dbfi.b and long.b, while awib-0.4.b is at 60%. Still, we shouldn't
 stare ourselves blind at these figures; it could be that these
-sequences end up being executed rarely. Let's look at an actual
-measurement of the speedup.
+sequences are executed rarely. Let's look at an actual measurement of
+the speedup.
 
 ![Improvement with contraction](/img/contract.png)
 
@@ -374,7 +374,7 @@ adds a copy of the current cell to the cell at offset <code>x</code>.
 
 Applying this to our copy loop example (<code>[-&gt;+&gt;+&lt;&lt;]</code>)
 results in three IR operations, <code>Copy(1), Copy(2), Clear</code>,
-which in turn compile into the following C code:
+which in turn compiles into the following C code:
 
     mem[p+1] += mem[p];
     mem[p+2] += mem[p];
@@ -465,7 +465,7 @@ hanoi.b has no multiplication loops but many copy loops.
 Both the copy loop and multiplication loop optimizations share an
 interesting trait: they perform an arithmetic operation at an offset
 from the current cell. In brainfuck we often find long sequences of
-non-loop operations. These sequences in typically contain a fair
+non-loop operations and these sequences typically contain a fair
 number of <code>&lt;</code> and <code>&gt;</code>. Why waste time
 moving the pointer around? What if we precalculate offsets for the
 non-loop instructions and only update the pointer at the end of these
@@ -476,7 +476,7 @@ sequences?
 Below we list what the IR and C output looks like for the non-loop
 operations. Note that while <code>Clear</code> and <code>Mul</code>
 are included in this list, the test was run with the operation offset
-optimization in isolation, so there two operations were never emitted
+optimization in isolation, so these two operations were never emitted
 by the compiler.
 
 <table>
@@ -535,14 +535,14 @@ Going further
 
 ### Smaller tweaks
 
-So far we've covered a handful of potentially high-impact techniques,
-but there are of course also a number of additional, smaller
-optimizations that can be applied. Here are some examples:
+So far we've covered a handful of common, potentially high-impact
+techniques, but there are of course also a number of additional,
+smaller optimizations that can be applied. Here are some examples:
 
 - Generalize <code>Clear</code> into <code>Set(x)</code> that sets the
-  current cell to <code>x</code>, with <code>Clear</code> being the
-  special case <code>Set(0)</code>, and contract sequences like
-  <code>Set(x) Add(y)</code> into <code>Set(x+y)</code>
+  current cell to <code>x</code>. <code>Clear</code> now becomes the
+  special case <code>Set(0)</code> and sequences like <code>Set(0)
+  Add(47)</code> can be contracted into <code>Set(47)</code>
 
 - Contract sequences of cancelling operations so that
   e.g. <code>Add(4) Sub(1)</code> becomes <code>Add(3)</code>
