@@ -126,15 +126,15 @@ Ubuntu Trusty.
 
 ### Contraction
 
-Brainfuck code is often riddled with long sequences of '+', '-', '<'
-and '>'. In our naive mapping, every single one of these instructions
-will result in a row of C code. Consider for instance the following
-brainfuck snippet:
+Brainfuck code is often riddled with long sequences of <code>+</code>,
+<code>-</code>, <code>&lt;</code> and <code>&gt;</code>. In our naive
+mapping, every single one of these instructions will result in a row
+of C code. Consider for instance the following brainfuck snippet:
 
     +++++[->>>++<<<]>>>.
 
 This program will output an ascii newline character (ascii 10,
-'\n'). The first sequence of '+' stores the number 5 in the current
+'\n'). The first sequence of <code>+</code> stores the number 5 in the current
 cell. After that we have a loop which in each iteration subtracts 1
 from the current cell and adds the number 2 to another cell 3 steps to
 the right. The loop will run 5 times, so the cell at offset 3 will be
