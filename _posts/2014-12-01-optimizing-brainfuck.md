@@ -229,8 +229,8 @@ immediately adjacent <code>&gt;</code>, <code>+</code>,
 <code>&lt;</code> or <code>-</code>. Lingering around 40% we have
 dbfi.b and long.b, while awib-0.4.b is at 60%. Still, we shouldn't
 stare ourselves blind at these figures; it could be that these
-sequences are executed rarely. Let's look at an actual measurement of
-the speedup.
+sequences are only executed rarely. Let's look at an actual
+measurement of the speedup.
 
 ![Improvement with contraction](/img/contract.png)
 
