@@ -63,6 +63,10 @@ pre {
     background-color: #f5f5f5;
 }
 
+p code {
+    background-color: #f1f1f1;
+}
+
 #main {
     font: "Times New Roman" georgia serif;
     width: 640px;
