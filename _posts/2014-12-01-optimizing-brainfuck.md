@@ -128,8 +128,9 @@ Ubuntu Trusty.
 
 Brainfuck code is often riddled with long sequences of <code>+</code>,
 <code>-</code>, <code>&lt;</code> and <code>&gt;</code>. In our naive
-mapping, every single one of these instructions will result in a row
-of C code. Consider for instance the following brainfuck snippet:
+mapping, every single one of these instructions will result in a line
+of C code. Consider for instance the following (somewhat contrived)
+brainfuck snippet:
 
     +++++[->>>++<<<]>>>.
 
@@ -293,7 +294,6 @@ the IR.
  <td><code>Clear</code></td>
  <td><code>mem[p] = 0;</code></td>
 </tr>
-
 </table>
 
 In addition to compiling all occurrences of <code>[-]</code> to
@@ -471,14 +471,6 @@ moving the pointer around? What if we precalculate offsets for the
 non-loop instructions and only update the pointer at the end of these
 sequences?
 
-![Improvement with operation offsets](/img/offsetops.png)
-
-Below we list what the IR and C output looks like for the non-loop
-operations. Note that while <code>Clear</code> and <code>Mul</code>
-are included in this list, the test was run with the operation offset
-optimization in isolation, so these two operations were never emitted
-by the compiler.
-
 <table>
 <tr>
  <th>IR</th>
@@ -518,17 +510,29 @@ by the compiler.
 </tr>
 </table>
 
-Here be some conclusions of the impact of this optimization. Have to
-rerun it first though.
+Note that while <code>Clear</code> and <code>Mul</code> are included
+in this table, the test was run with the operation offset optimization
+in isolation, so these two operations were never emitted by the
+compiler.
+
+![Improvement with operation offsets](/img/offsetops.png)
+
+Tangible results, albeit somewhat meager.
 
 ### Applying all optimizations
 
-Finally, let's apply all optimizations.
+To summarize, let's have a look at where we get by applying all these
+optimizations to our sample programs.
 
 ![Runtime with no vs all optimizations applied](/img/all.png)
 
 Some conclusion. A note about how it matters that the optimizations
 are applied in the correct order.
+
+TODO fix this and the remaining sections
+TODO break out optimizations into separate python modules
+TODO add links to implementations of each optimization
+
 
 Going further
 -------------
