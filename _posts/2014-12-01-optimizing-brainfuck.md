@@ -14,10 +14,9 @@ draft: true
 >
 > Ada Lovelace, 1843
 
-In this post, we'll have a look at how to "reduce to a minimum the
-time necessary" for executing brainfuck code. Brainfuck compiler
-optimization strategies, in other words. The chart below illustrates
-the impact of the techniques covered.
+In this post, we'll have a look at some common brainfuck compiler
+optimization strategies. The chart below illustrates the impact of the
+techniques covered.
 
 ![Runtime with no vs all optimizations applied](/img/runtime2.png)
 
