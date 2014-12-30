@@ -25,7 +25,7 @@ Prerequisites
 
 If you're new to the brainfuck programming language, then head on over
 to [the previous post](/2014/09/30/brainfuck-java.html) where we cover
-both the basics of the language and some of the issues encountered
+both the basics of the language as well as some of the issues encountered
 when writing a brainfuck-to-java compiler in brainfuck. With that
 said, most of this post should be grokkable even without prior
 experience of the language.
@@ -627,18 +627,13 @@ Tangible results, albeit somewhat meager.
 
 ### Applying all optimizations
 
-To summarize, let's have a look at where we get by applying all these
-optimizations to our sample programs.
+To wrap up, let's have a look at where we end up when applying all
+these optimizations to our sample programs.
 
 ![Runtime with no vs all optimizations applied](/img/all.png)
 
-Some conclusion. A note about how it matters that the optimizations
-are applied in the correct order.
-
-TODO fix this and the remaining sections
-TODO break out optimizations into separate python modules
-TODO add links to implementations of each optimization
-
+Significant improvement across the board, ranging from about 130x in
+the case of hanoi.b to the FIXME speedup of awib-0.4.
 
 Going further
 -------------
