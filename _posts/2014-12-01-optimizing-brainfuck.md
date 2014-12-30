@@ -245,7 +245,7 @@ implementing.
 
 A common idiom in brainfuck is the clear loop: <code>[-]</code>. This
 loop subtracts 1 from the current cell and keeps iterating until the
-cell reaches zero. Executed naively, the clear loop's runtime is
+cell reaches zero. Executed naively, the clear loop's run time is
 potentially proportional to the maximum value that a cell can hold
 (commonly 255).
 
@@ -297,7 +297,7 @@ the IR.
 
 In addition to compiling all occurrences of <code>[-]</code> to
 <code>Clear</code>, we can also do the same for <code>[+]</code>. This
-works since (all sane implemenations of) brainfuck's memory model
+works since (all sane implementations of) brainfuck's memory model
 provides cells that wrap around to 0 when the max value is exceeded.
 
 Inspecting our sample programs reveals that roughly 8% of the
