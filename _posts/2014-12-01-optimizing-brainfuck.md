@@ -643,40 +643,42 @@ TODO add links to implementations of each optimization
 Going further
 -------------
 
-### Smaller tweaks
-
 So far we've covered a handful of common, potentially high-impact
-techniques, but there are of course also a number of additional,
-smaller optimizations that can be applied. Here are some examples:
+techniques. There are of course also number of additional
+optimizations that can be applied. Here are some of them.
 
-- Generalize <code>Clear</code> into <code>Set(x)</code> that sets the
-  current cell to <code>x</code>. <code>Clear</code> now becomes the
-  special case <code>Set(0)</code> and sequences like <code>Set(0)
-  Add(47)</code> can be contracted into <code>Set(47)</code>
+### Minor optimizations
+
+These tweaks are unlikely to produce significant results on their own
+but can do so in conjunction.
 
 - Contract sequences of cancelling operations so that
-  e.g. <code>Add(4) Sub(1)</code> becomes <code>Add(3)</code>
+  e.g. <code>Add(4) Sub(1)</code> becomes <code>Add(3)</code>.
+
+- Generalize <code>Clear</code> into a <code>Set(x)</code> operation
+  that sets the current cell to <code>x</code>. <code>Clear</code> now
+  becomes the special case <code>Set(0)</code> and sequences like
+  <code>Set(0) Add(47)</code> can be contracted into
+  <code>Set(47)</code>
 
 - Eliminate obviously dead code, e.g. any loop opened immediately
   after an instruction that necessarily results in the current cell
   being 0, such as <code>Close</code> and <code>Clear</code>.
 
-Such optimizations will typically have fairly small impact on their
-own but can be worth implementing after having covered the main
-techniques discussed previously.
+### Pre-execution
 
-### Pre-execution or something like that
+Another interesting optimization consists of executing pieces of a
+brainfuck program at compile time. For instance, any prefix of a
+brainfuck program that is free from I/O operations can safely be
+treated like this. It is sufficient to make sure that the state
+(i.e. memory area and pointer) of the remainder of the program is
+initialized to whatever it ended up being when execution of the prefix
+halted. This of course assumes that the prefix halts at all.
 
-Some brainfuck programs run without ever reading any input. A compiler
-can simple execute such programs at compile time and reduce them to a
-simple sequence of output operations.
-
-Perhaps less obviously, the same applies to all prefixes of brainfuck
-programs up to the first loop containing an input operation. A
-compiler can execute these prefixes at compile time and replace them
-with more compact and efficient code. As long as the state of the
-memory area and the pointer is the same, the program will operate
-identically.
+Similar techniques can be applied to any program segment that operates
+independently of data read in previous input operations. It can, in a
+sense, be considered as a form of [constant
+propagation](http://en.wikipedia.org/wiki/Constant_folding).
 
 Summary
 -------
