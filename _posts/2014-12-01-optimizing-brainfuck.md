@@ -458,6 +458,105 @@ and hanoi.b not at all. The explanation is simple: long.b
 contains no copy loops but one deeply nested multiplication loop;
 hanoi.b has no multiplication loops but many copy loops.
 
+### Scan loops
+
+We have so far been able to improve the performance of most of our
+sample programs, but dbfi.b remains elusive. Examining the source code
+reveals something interesting: out of dbfi.b's 429 instructions a
+whopping 8% make up loops like <code>[&lt;]</code> and
+<code>[&gt;]</code>. These pieces of code operate by repeatedly moving
+the pointer (left or right, respectively) until a zero cell is
+reached. We saw [a nice
+example](/2014/09/30/brainfuck-java.html#storing-the-stack) in the
+previous post of how they can be utilized.
+
+It should be mentioned that while scanning past runs of non-zero cells
+is a common and important use case for these loops, it is not the only
+one. For instance, the same constructs can appear in snippets like
+<code>+&lt;[&gt;-]&gt;[&gt;]&lt;</code>, the exact meaning of which is
+left as an exercise for the reader to figure out. With that said, the
+scanning case can be very time consuming when spanning large memory
+areas and is arguably what we should optimize for.
+
+Fortunately for us, the problem of efficiently searching a memory area
+for occurrences of a particular byte is mostly solved by the C
+standard library's <code>memchr()</code> function. Scanning
+"backwards" is in turn handled by the GNU extension
+<code>memrchr()</code>. In a nutshell, these functions operate by
+loading full memory words (typically 32 or 64 bits) into a CPU
+register and checking the individual 8-bit components in parallel.
+
+Let's extend the IR by adding two new operations:
+<code>ScanLeft</code> and <code>ScanRight</code>.
+
+<table>
+<tr>
+ <th>IR</th>
+ <th>C</th>
+</tr>
+<tr>
+ <td><code>Add(x)</code></td>
+ <td><code>mem[p] += x;</code></td>
+</tr>
+<tr>
+ <td><code>Sub(x)</code></td>
+ <td><code>mem[p] -= x;</code></td>
+</tr>
+<tr>
+ <td><code>Right(x)</code></td>
+ <td><code>p += x;</code></td>
+</tr>
+<tr>
+ <td><code>Left(x)</code></td>
+ <td><code>p -= x;</code></td>
+</tr>
+<tr>
+ <td><code>Out</code></td>
+ <td><code>putchar(mem[p]);</code></td>
+</tr>
+<tr>
+ <td><code>In</code></td>
+ <td><code>mem[p] = getchar();</code></td>
+</tr>
+<tr>
+ <td><code>Open</code></td>
+ <td><code>while(mem[p]) {</code></td>
+</tr>
+<tr>
+ <td><code>Add</code></td>
+ <td><code>}</code></td>
+</tr>
+<tr>
+ <td><code>Clear</code></td>
+ <td><code>mem[p] = 0;</code></td>
+</tr>
+<tr>
+ <td><code>Mul(x, y)</code></td>
+ <td><code>mem[p+x] += mem[p] * y;</code></td>
+</tr>
+<tr style="background-color:  #aaeeaa;">
+ <td><code>ScanLeft</code></td>
+ <td><code>p -= (long)((void *)(mem + p) - memrchr(mem, 0, p + 1));</code></td>
+</tr>
+<tr style="background-color:  #aaeeaa;">
+ <td><code>ScanRight</code></td>
+ <td><code>p += (long)(memchr(mem + p, 0, sizeof(mem)) - (void *)(mem + p));</code></td>
+</tr>
+</table>
+
+An unfortunate consequence of using array indexes instead of direct
+pointer manipulation is that the C versions of the scan operations
+look pretty horrid. Well, such is life.
+
+![Improvement with scan loop optimization](/img/scanloop.png)
+
+More than a 3x speedup for dbfi.b while the other programs see little
+to no improvement. There is of course no guarantee that calling
+<code>memchr()</code> will give the same result on other libc
+implementations or on a different architecture. Still, there are
+efficient and portable <code>memchr()</code> and
+<code>memrchr()</code> implementations out there, so these functions
+can easily be bundled by a compiler.
 
 ### Operation offsets
 
@@ -506,6 +605,14 @@ sequences?
 <tr style="background-color:  #aaeeaa;">
  <td><code>Mul(x, y, off)</code></td>
  <td><code>mem[p+x+off] += mem[p+off] * y;</code></td>
+</tr>
+<tr>
+ <td><code>ScanLeft</code></td>
+ <td><code>p -= (long)((mem + p) - (unsigned char*)memrchr(mem, 0, p+1));</code></td>
+</tr>
+<tr>
+ <td><code>ScanRight</code></td>
+ <td><code>p += (long)((unsigned char*)memchr(mem+p, 0, 65535) - (mem+p));</code></td>
 </tr>
 </table>
 
