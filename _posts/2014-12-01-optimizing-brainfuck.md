@@ -463,19 +463,19 @@ hanoi.b has no multiplication loops but many copy loops.
 We have so far been able to improve the performance of most of our
 sample programs, but dbfi.b remains elusive. Examining the source code
 reveals something interesting: out of dbfi.b's 429 instructions a
-whopping 8% make up loops like <code>[&lt;]</code> and
+whopping 8% can be found in loops like <code>[&lt;]</code> and
 <code>[&gt;]</code>. These pieces of code operate by repeatedly moving
 the pointer (left or right, respectively) until a zero cell is
 reached. We saw [a nice
 example](/2014/09/30/brainfuck-java.html#storing-the-stack) in the
-previous post of how they can be utilized.
+previous post of how they can be utilized. <!-- to move between segments and so on -->
 
 It should be mentioned that while scanning past runs of non-zero cells
 is a common and important use case for these loops, it is not the only
-one. For instance, the same constructs can appear in snippets like
+one. For instance, the same construct can appear in snippets like
 <code>+&lt;[&gt;-]&gt;[&gt;]&lt;</code>, the exact meaning of which is
 left as an exercise for the reader to figure out. With that said, the
-scanning case can be very time consuming when spanning large memory
+scanning case can be very time consuming when traversing large memory
 areas and is arguably what we should optimize for.
 
 Fortunately for us, the problem of efficiently searching a memory area
@@ -484,7 +484,9 @@ standard library's <code>memchr()</code> function. Scanning
 "backwards" is in turn handled by the GNU extension
 <code>memrchr()</code>. In a nutshell, these functions operate by
 loading full memory words (typically 32 or 64 bits) into a CPU
-register and checking the individual 8-bit components in parallel.
+register and checking the individual 8-bit components in
+parallel. This proves to be much more efficient than inspecting
+individual bytes.
 
 Let's extend the IR by adding two new operations:
 <code>ScanLeft</code> and <code>ScanRight</code>.
@@ -551,11 +553,11 @@ look pretty horrid. Well, such is life.
 ![Improvement with scan loop optimization](/img/scanloop.png)
 
 More than a 3x speedup for dbfi.b while the other programs see little
-to no improvement. There is of course no guarantee that calling
-<code>memchr()</code> will give the same result on other libc
-implementations or on a different architecture. Still, there are
+to no improvement. There is of course no guarantee that
+<code>memchr()</code> will perform as well on other libc
+implementations or on a different architecture, but there are
 efficient and portable <code>memchr()</code> and
-<code>memrchr()</code> implementations out there, so these functions
+<code>memrchr()</code> implementations out there so these functions
 can easily be bundled by a compiler.
 
 ### Operation offsets
@@ -627,7 +629,7 @@ Tangible results, albeit somewhat meager.
 
 ### Applying all optimizations
 
-To wrap up, let's have a look at where we end up when applying all
+To wrap up, let's have a look at what we can accomplish by applying all
 these optimizations to our sample programs.
 
 ![Runtime with no vs all optimizations applied](/img/all.png)
@@ -639,13 +641,13 @@ Going further
 -------------
 
 So far we've covered a handful of common, potentially high-impact
-techniques. There are of course also number of additional
+techniques. There are of course also a number of additional
 optimizations that can be applied. Here are some of them.
 
 ### Minor optimizations
 
 These tweaks are unlikely to produce significant results on their own
-but can do so in conjunction.
+but can do so in conjunction with other techniques.
 
 - Contract sequences of cancelling operations so that
   e.g. <code>Add(4) Sub(1)</code> becomes <code>Add(3)</code>.
@@ -662,10 +664,10 @@ but can do so in conjunction.
 
 ### Pre-execution
 
-Another interesting optimization consists of executing pieces of a
+Another interesting optimization consists of executing parts of a
 brainfuck program at compile time. For instance, any prefix of a
 brainfuck program that is free from I/O operations can safely be
-treated like this. It is sufficient to make sure that the state
+pre-executed. It is sufficient to make sure that the state
 (i.e. memory area and pointer) of the remainder of the program is
 initialized to whatever it ended up being when execution of the prefix
 halted. This of course assumes that the prefix halts at all.
