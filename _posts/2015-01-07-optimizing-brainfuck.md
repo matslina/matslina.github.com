@@ -610,11 +610,11 @@ sequences?
 </tr>
 <tr>
  <td><code>ScanLeft</code></td>
- <td><code>p -= (long)((mem + p) - (unsigned char*)memrchr(mem, 0, p+1));</code></td>
+ <td><code>p -= (long)((void *)(mem + p) - memrchr(mem, 0, p + 1));</code></td>
 </tr>
 <tr>
  <td><code>ScanRight</code></td>
- <td><code>p += (long)((unsigned char*)memchr(mem+p, 0, 65535) - (mem+p));</code></td>
+ <td><code>p += (long)(memchr(mem + p, 0, sizeof(mem)) - (void *)(mem + p));</code></td>
 </tr>
 </table>
 
