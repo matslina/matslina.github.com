@@ -635,7 +635,7 @@ these optimizations to our sample programs.
 ![Runtime with no vs all optimizations applied](/img/all.png)
 
 Significant improvement across the board, ranging from about 130x in
-the case of hanoi.b to the FIXME speedup of awib-0.4.
+the case of hanoi.b to the 2.4x speedup of awib-0.4.
 
 Going further
 -------------
