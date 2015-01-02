@@ -1,6 +1,6 @@
 ---
 layout: post
-title: brainfuck optimizations - how they work and how much they help
+title: brainfuck optimization strategies
 location: New York
 draft: true
 ---
