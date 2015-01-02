@@ -318,7 +318,7 @@ little snippet: <code>[-&gt;+&gt;+&lt;&lt;]</code>. Just like the
 clear loop, the body subtracts 1 from the current cell and iterates
 until it reaches 0. But there's a side effect. For each iteration the
 body will add 1 to the two cells above the current one, effectively
-clearing the current cell while adding it's original value to the
+clearing the current cell while adding its original value to the
 other two cells.
 
 Let's introduce another IR operation called <code>Copy(x)</code> that
