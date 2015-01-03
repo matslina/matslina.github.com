@@ -14,9 +14,13 @@ draft: true
 >
 > Ada Lovelace, 1843
 
-In this post, we'll have a look at some common brainfuck compiler
-optimization strategies. The chart below illustrates the impact of the
-techniques covered.
+Lovelace's words still ring true, almost two centuries later. One way
+to *choose that arrangement* is to use an optimizing compiler. In this
+post, we'll have a look some important compiler optimization
+strategies for the brainfuck programming language and we'll examine
+how they affect the run time of a handful of non-trivial brainfuck
+programs. The chart below illustrates the impact of the techniques
+covered.
 
 ![Runtime with no vs all optimizations applied](/img/runtime2.png)
 
