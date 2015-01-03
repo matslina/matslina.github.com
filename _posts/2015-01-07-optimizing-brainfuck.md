@@ -469,7 +469,7 @@ sample programs, but dbfi.b remains elusive. Examining the source code
 reveals something interesting: out of dbfi.b's 429 instructions, a
 whopping 8% can be found in loops like <code>[&lt;]</code> and
 <code>[&gt;]</code>. Contrast that with awib-0.4 being at 0.8% and the
-other progams having no occurrences of this construct at all. These
+other programs having no occurrences of this construct at all. These
 pieces of code operate by repeatedly moving the pointer (left or
 right, respectively) until a zero cell is reached. We saw [a nice
 example](/2014/09/30/brainfuck-java.html#storing-the-stack) in the
