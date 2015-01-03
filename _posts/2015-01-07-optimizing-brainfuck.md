@@ -644,4 +644,12 @@ the case of hanoi.b to the 2.4x speedup of awib-0.4.
 Summary
 -------
 
-Brainfuck is fun. Over and out.
+Fairly simple techniques proved to significantly improve the
+performance of our sample programs. Brainfuck compiler writers should
+consider implementing at least some of them. Now, spending time and
+effort on such an esoteric language as brainfuck may seem like a
+pointless exeercise, but we hope and believe that some of the concepts
+can carry over to more real settings. Also, mucking around with
+brainfuck is just plain fun.
+
+That was all.
