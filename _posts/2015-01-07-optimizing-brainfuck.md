@@ -466,13 +466,14 @@ hanoi.b has no multiplication loops but many copy loops.
 
 We have so far been able to improve the performance of most of our
 sample programs, but dbfi.b remains elusive. Examining the source code
-reveals something interesting: out of dbfi.b's 429 instructions a
+reveals something interesting: out of dbfi.b's 429 instructions, a
 whopping 8% can be found in loops like <code>[&lt;]</code> and
-<code>[&gt;]</code>. These pieces of code operate by repeatedly moving
-the pointer (left or right, respectively) until a zero cell is
-reached. We saw [a nice
+<code>[&gt;]</code>. Contrast that with awib-0.4 being at 0.8% and the
+other progams having no occurrences of this construct at all. These
+pieces of code operate by repeatedly moving the pointer (left or
+right, respectively) until a zero cell is reached. We saw [a nice
 example](/2014/09/30/brainfuck-java.html#storing-the-stack) in the
-previous post of how they can be utilized. <!-- to move between segments and so on -->
+previous post of how they can be utilized.
 
 It should be mentioned that while scanning past runs of non-zero cells
 is a common and important use case for these loops, it is not the only
@@ -489,8 +490,8 @@ standard library's <code>memchr()</code> function. Scanning
 <code>memrchr()</code>. In a nutshell, these functions operate by
 loading full memory words (typically 32 or 64 bits) into a CPU
 register and checking the individual 8-bit components in
-parallel. This proves to be much more efficient than inspecting
-individual bytes.
+parallel. This proves to be much more efficient than loading and
+inspecting bytes one at a time.
 
 Let's extend the IR by adding two new operations:
 <code>ScanLeft</code> and <code>ScanRight</code>.
