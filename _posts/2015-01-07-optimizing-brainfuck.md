@@ -2,7 +2,7 @@
 layout: post
 title: brainfuck optimization strategies
 location: New York
-draft: true
+draft: false
 ---
 
 > In almost every computation a great variety of arrangements for the
