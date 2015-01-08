@@ -208,10 +208,6 @@ operation should be applied <code>x</code> times:
  <td><code>Add</code></td>
  <td><code>}</code></td>
 </tr>
-<tr>
- <td><code>Clear</code></td>
- <td><code>mem[p] = 0;</code></td>
-</tr>
 </table>
 
 Applying this to our snippet produces a much more compact piece of C:
