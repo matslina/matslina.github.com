@@ -75,9 +75,8 @@ p code {
 }
 
 #main header {
-    padding: 0;
+    padding: 1em 0 0 0;
     overflow: hidden;
-    margin: 0;
     font-weight: bold;
 }
 
@@ -95,8 +94,12 @@ ul.posts {
 }
 
 #post {
-    padding: 1em 0;
+    padding: 2em 0;
     margin: 0 auto;
     text-align: justify;
     line-height: 1.3em;
+}
+
+#navbar {
+    padding: .5em 0 0 0;
 }

@@ -2,7 +2,16 @@
 layout: default
 ---
 
-<div id="post">
+<div id="navbar">
+  {% if page.previous %}
+  <a style="float: left;" href="{{ page.previous.url }}">← {{ page.previous.title }}</a>
+  {% endif %}
+  {% if page.next %}
+  <a style="float: right;" href="{{ page.next.url }}">{{ page.next.title }} →</a>
+  {% endif %}
+</div>
+
+<div id="post" style="clear: all;">
   <h1>{{page.title}}</h1>
   <span class="meta">Mats Linander<br/>{{ page.date | date: "%Y-%m-%d" }} - {{page.location}}</span>
 
