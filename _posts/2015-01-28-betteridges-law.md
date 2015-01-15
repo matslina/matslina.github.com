@@ -11,6 +11,8 @@ course no law - it is trivial to create a counterexample - but rather
 a tongue-in-cheek comment on poor journalism hiding behind dubious
 headlines.
 
+<!-- counterexample feels iffy. do em instead of hyphen. or parenthesis? -->
+
 In this post we'll have a look at just how incorrect Betteridge's law
 is. Using the scripts in [this
 repository](https://github.com/matslina/betteridgeslaw), we have
@@ -29,6 +31,9 @@ be "an interesting programming language", but certainly not "yes" and
 certainly not "no". A *polar question*, on the other hand, is a
 question for which the answer *is* expected to be "yes" or "no".
 
+<!-- perhaps give an example of a real non-polarheadline? -->
+<!-- explain the pie chart more clearly. should be clear that it's the 397 sample. -->
+
 ![polarity image](/img/betteridge_polarity_pie.png)
 
 By virtue of their non-polarity, 45% of our dubious headlines violate
@@ -44,6 +49,8 @@ polar to non-polar questions but there are clear differences in the
 total number of headlines ending in question mark. Then again, our
 crawler is not all that polished, so there may be some bias introduced
 by how the headlines were collected.
+
+<!-- this paragraph should be split. first cover polarity ratio. then cover ratio of qmark hlines per source. -->
 
 Yes / No / Maybe
 ================
@@ -74,11 +81,20 @@ especially Reuters and NY Daily News, so let's not jump to too many
 conclusions based on this data.
 
 
+<!-- this part feels a bit thin. perhaps mention that iterating on and researching maybes seem to maintain 50% split. guesstimate that it approaches 50-50. -->
+
+
 ![polarity image](/img/betteridge_answer_stack.png)
+
+<!-- relevant here is that most are still close to 50-50, in spite of publications presumably being biased to/from my frame of mind. does that suggest that 50-50 split is correct? -->
+
+<!-- perhaps high ratio of 'maybe' is an indication of weaslyness? -->
 
 
 Conclusion
 ==========
+
+<!-- possibly chop this up as per above comment -->
 
 We already knew that Betteridge's law was incorrect. Now we know it
 even more. Additionally, we're going to go out on a limb here and
@@ -87,3 +103,5 @@ and effort, be turned into "yes" or "no" answers, and that these will
 be distributed roughly 50-50 as well. We conclude that "*roughly a
 quarter of all headlines which ends in a question mark can be answered
 by the word no.*"
+
+<!-- at some point I need to mention that I'm not publishing the raw headlines and their answers coz copyright. but encourage others to redo the experiment. -->
