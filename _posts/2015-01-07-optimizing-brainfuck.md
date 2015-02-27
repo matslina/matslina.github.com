@@ -650,3 +650,6 @@ can carry over to more real settings. Also, mucking around with
 brainfuck is just plain fun.
 
 That was all.
+
+**See also:** Discussion on [hacker
+  news](https://news.ycombinator.com/item?id=8850925)
