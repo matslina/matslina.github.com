@@ -9,7 +9,7 @@ Betteridge's law of headlines states that *any headline which ends in
 a question mark can be answered by the word no*. This "law" is of
 course no law -- it is trivial to create a counterexample -- but
 should rather be viewed as a tongue-in-cheek remark on how poor
-journalism sometimes hide behind dubious headlines.
+journalism sometimes hides behind dubious headlines.
 
 In this post we'll have a look at just how incorrect Betteridge's law
 is. Using the scripts in [this
