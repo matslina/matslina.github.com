@@ -5,90 +5,81 @@ location: New York
 draft: true
 ---
 
-Betteridge's law of headlines states that *any headline which ends in
-a question mark can be answered by the word no*. This "law" is of
-course no law -- it is trivial to create a counterexample -- but
-should rather be viewed as a tongue-in-cheek remark on how poor
+Betteridge's law of headlines famously asserts that *any headline that
+ends in a question mark can be answered by the word "no".* This "law"
+is of course no law -- creating a counter-example is trivial -- but
+should rather be seen as a tounge-in-cheek remark on how poor
 journalism sometimes hides behind dubious headlines.
 
-In this post we'll have a look at just how incorrect Betteridge's law
-is. Using the scripts in [this
-repository](https://github.com/matslina/betteridgeslaw), we have
-crawled 13 news sites for a total of 26000 headlines (2000 per site)
-and have tried to manually answer the 766 of them that end in a
-question mark.
+In this post we'll try to answer to what extent Betteridge's law
+applies to current articles on the internet. Using the scripts in
+[this repository](https://github.com/matslina/betteridgeslaw), we have
+crawled 13 separate news sites for a total of 26000 headlines (2000
+per site) and tried to answer the 766 of them that end in question
+mark.
 
-Caveat lector: the data presented in this post is the product of a
-single person trying to answer a large number of questions, many of
-which are subjective in their nature, so don't confuse this for
-science.
+Headline polarity
+-----------------
 
-Polar questions
----------------
+A *polar question* is a question for which the expected answer is
+either "yes" or "no". We find plenty of these among our 766 headlines,
+but also plenty of *non-polar* questions.
 
-Some questions can't meaningfully be answered with neither "yes" nor
-"no". The BBC asks [why we value
+For instance, the BBC asks [why we value
 gold](http://www.bbc.com/news/magazine-25255957) and USA Today asks
 [what Facebook could have bought instead of acquiring WhatsApp for $16
-billion](http://www.usatoday.com/story/news/nation-now/2014/02/19/facebook-whatsapp-16-billion/5621721/).
-We can with confidence rule out both "yes" and "no" as valid answers
-for these questions, since the questions are not yes-no
-questions. Replying "yes" or "no" makes no sense.
-
-A *polar question*, on the other hand, is a question for which the
-answer *is* expected to be "yes" or "no". We waded through our 766
-headlines and classified them by polarity.
+billion](http://www.usatoday.com/story/news/nation-now/2014/02/19/facebook-whatsapp-16-billion/5621721/). We
+can with confidence rule out both "yes" and "no" as valid answers for
+these questions, since neither answer makes any sense.
 
 ![polarity image](/img/betteridge_polarity_pie.png)
 
-Of the 766 headlines ending in question mark, roughly 46% are
-non-polar and as such violate Betteridge's law. They are not yes-no
-questions, so the answer is not "no". We conclude that Betteridge's
-law is incorrect.
+Roughly 46% of the 766 headlines ending in question mark are
+non-polar. They are not yes-no questions, so the answer can't be
+"no". As such, they contradict Betteridge's law.
 
-But, we're not done yet. It could be that the remaining 54% all have
-the answer "no", which would make the law "mostly true". Is
-Betteridge's law mostly true?
 
-Yes / No / Maybe
-----------------
+Yes and no but also maybe
+-------------------------
 
-While the expected answer to a polar headline is either "yes" or "no",
-providing such an answer is not always a simple task.
+Even though Betteridge's law clearly isn't correct, could it be that
+the remaining 54% of the headlines all have the answer "no", thereby
+making the law *mostly correct*? We did another sweep through the
+polar headlines to find out.
 
-The BBC asks if [India is the next university
-superpower](http://www.bbc.com/news/business-12597815), but doesn't
+Answering these headlines is not always simple. For instance, *we*
+certainly believe that [crunching big data can help feed the
+world](http://www.bbc.com/news/business-26424338), but that there's no
+way that [shake shack makes the world's best
+burger](http://www.dailymail.co.uk/travel/article-1353847/Shake-shack-worlds-best-burger.html). These
+questions are subjective and some may disagree with our answers.
+
+There are also a number of headlines that we failed to answer. For
+instance, the BBC asks if [India is the next university
+superpower](http://www.bbc.com/news/business-12597815) but does not
 define what "university superpower" means. It doesn't seem impossible
 that India could become that, whatever it is, but we can't really say
-if it's more likely to happen than not. Hence, the answer will have to
-be "maybe".
+if it's more likely to happen than not. Hence, the answer to this, and
+to several other questions, will have to be "maybe".
 
-The Daily Mail asks if [Cathy Freeman's missing bodysuit has been
-found](http://www.dailymail.co.uk/sport/othersports/article-2885773/Cathy-Freeman-s-missing-bodysuit-Sydney-2000-Olympic-Games-anonymously-handed-original.html). The
-article suggests that this question should be answered in the near
-future, but, as of this writing, we can't find any clear information
-on whether or not it has been. The answer remains "maybe".
-
-For the purpose of determining if Betteridge's law is *mostly* true,
-we don't need answers for all headlines, just for the majority of
-them. We did a sweep through the polar 56% of our total 766 headlines
-and answered as many of them as we could.
+Interested readers can check out the [raw data
+set](https://gist.github.com/matslina/64601f39ef12bd653be6) for a
+closer look.
 
 ![polarity image](/img/betteridge_answer_pie.png)
 
 With 46% non-polar and 20% answered "yes", at least two thirds of our
-headline sample violates Betteridge's law. It cannot be "mostly
-correct" either.
-
-We already knew that Betteridge's law was incorrect. Now we know it
-even more. Additionally, we're going to go out on a limb here and
-guesstimate that the remaining "maybe" answers can, given enough time
-and effort, be turned into "yes" or "no" answers, and that these will
-be distributed similarly to the 20:17 ratio of the fully
-answered. That would put the total ratio of "no" at 25%.
+headline sample violates Betteridge's law. We conclude that it cannot
+be "mostly correct" either.
 
 Conclusion
-==========
+----------
 
-It appears that *roughly a quarter of all headlines which ends in
-question mark can be answered by the word no*.
+We're going to go out on a limb here and guesstimate that the
+remaining "maybe" answers can, given enough time and effort, be turned
+into "yes" or "no" answers, and that these will be distributed
+similarly to the 20:17 ratio of the fully answered headlines. That
+would put the total ratio of "no" at 25%.
+
+In other words, it appears as if *roughly a quarter of all headlines
+which ends in question mark can be answered by the word no*.
