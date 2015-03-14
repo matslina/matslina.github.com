@@ -8,7 +8,7 @@ draft: true
 Betteridge's law of headlines famously asserts that *any headline that
 ends in a question mark can be answered by the word "no".* This "law"
 is of course no law -- creating a counter-example is trivial -- but
-should rather be seen as a tounge-in-cheek remark on how poor
+should rather be seen as a tongue-in-cheek remark on how poor
 journalism sometimes hides behind dubious headlines.
 
 In this post we'll try to answer to what extent Betteridge's law
@@ -29,7 +29,7 @@ For instance, the BBC asks [why we value
 gold](http://www.bbc.com/news/magazine-25255957) and USA Today asks
 [what Facebook could have bought instead of acquiring WhatsApp for $16
 billion](http://www.usatoday.com/story/news/nation-now/2014/02/19/facebook-whatsapp-16-billion/5621721/). We
-can with confidence rule out both "yes" and "no" as valid answers for
+can with confidence rule out both "yes" and "no" as valid answers to
 these questions, since neither answer makes any sense.
 
 ![polarity image](/img/betteridge_polarity_pie.png)
