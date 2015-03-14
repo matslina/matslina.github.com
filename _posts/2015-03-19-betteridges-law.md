@@ -42,8 +42,8 @@ non-polar. They are not yes-no questions, so the answer can't be
 Yes and no but also maybe
 -------------------------
 
-Even though Betteridge's law clearly isn't correct, could it be that
-the remaining 54% of the headlines all have the answer "no", thereby
+Even though Betteridge's law clearly doesn't hold for all headlines,
+could it be that the remaining 54% all have the answer "no", thereby
 making the law *mostly correct*? We did another sweep through the
 polar headlines to find out.
 
