@@ -48,9 +48,9 @@ making the law *mostly correct*? We did another sweep through the
 polar headlines to find out.
 
 Answering these headlines is not always simple. For instance, *we*
-certainly believe that [crunching big data can help feed the
-world](http://www.bbc.com/news/business-26424338), but that there's no
-way that [shake shack makes the world's best
+believe that [crunching big data can help feed the
+world](http://www.bbc.com/news/business-26424338), but disagree that
+[shake shack makes the world's best
 burger](http://www.dailymail.co.uk/travel/article-1353847/Shake-shack-worlds-best-burger.html). These
 questions are subjective and some may disagree with our answers.
 
