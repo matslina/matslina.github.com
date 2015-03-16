@@ -6,7 +6,7 @@ draft: true
 ---
 
 Betteridge's law of headlines famously asserts that *any headline that
-ends in a question mark can be answered by the word "no".* This "law"
+end in a question mark can be answered by the word "no".* This "law"
 is of course no law -- creating a counter-example is trivial -- but
 should rather be seen as a tongue-in-cheek remark on how poor
 journalism sometimes hides behind dubious headlines.
@@ -87,4 +87,4 @@ similarly to the 20:17 ratio of the fully answered headlines. That
 would put the total ratio of "no" at 25%.
 
 In other words, it appears as if *roughly a quarter of all headlines
-which ends in question mark can be answered by the word no*.
+which end in question mark can be answered by the word no*.
