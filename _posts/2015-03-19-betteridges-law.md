@@ -62,7 +62,12 @@ that India could become that, whatever it is, but we can't really say
 if it's more likely to happen than not. Hence, the answer to this, and
 to several other questions, will have to be "maybe".
 
-Interested readers can check out the [raw data
+Among the "maybes" there's a whole plethora of reasons why a clear
+"yes" or "no" wasn't provided. In some cases, like above, we doubt
+anyone can really say. In other cases the answer is probably out there
+somewhere, but we failed to find it. And there are of course also
+various sports related questions that we couldn't muster up the energy
+to research properly. Interested readers can check out the [raw data
 set](https://gist.github.com/matslina/64601f39ef12bd653be6) for a
 closer look.
 
