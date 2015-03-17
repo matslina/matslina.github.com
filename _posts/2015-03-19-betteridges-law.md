@@ -87,4 +87,4 @@ similarly to the 20:17 ratio of the fully answered headlines. That
 would put the total ratio of "no" at 25%.
 
 In other words, it appears as if *roughly a quarter of all headlines
-which end in question mark can be answered by the word no*.
+which end in a question mark can be answered by the word no*.
