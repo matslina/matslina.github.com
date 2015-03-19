@@ -2,7 +2,7 @@
 layout: post
 title: is betteridge's law of headlines correct?
 location: New York
-draft: true
+draft: false
 ---
 
 Betteridge's law of headlines famously asserts that *any headline that
