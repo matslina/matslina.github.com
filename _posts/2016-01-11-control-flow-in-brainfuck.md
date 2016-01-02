@@ -11,14 +11,12 @@ of control flow statements. We are accustomed to using loops like
 <code>if</code> and <code>switch</code>; subroutine invocations and
 perhaps even unconditional jumps like <code>goto</code>. Similarly,
 there is usually a plethora of arithmetical operators that make
-comparing things a breeze. We can sprinkle <code>==</code>,
-<code>&lt;=</code> and <code>!=</code> all over our programs if we
-wish.
+comparing things a breeze.
 
-True to its name, brainfuck is markedly different. It's only control
+True to its name, brainfuck is markedly different. Its only control
 flow statement also doubles as its only means of performing
 arithmetical comparison. In this blog post, we'll have a look at some
-common high level control flow constructs and how the equivalent
+common high level control flow mechanisms and how the equivalent
 functionality can be implemented in brainfuck.
 
 The reader is encouraged to read up a bit about brainfuck before
@@ -52,6 +50,8 @@ This shouldn't come as a surprise either, since brainfuck
 is turing-complete and as such can solve any solveable computational
 problem.
 -->
+
+<!-- this section felt a bit thin. pointless. -->
 
 if non-zero (destructively)
 ===========================
@@ -97,7 +97,7 @@ the number 0 was read instead, execution would flow like this:
 
 ![if non-zero, destructively, 0 as input](/img/bfflow_ifnonzero_destructive_0.gif)
 
-To summarize, <code>if (x != 0) {stuff}</code> can be implemented in
+To summarize, <code>if (x != 0) { stuff }</code> can be implemented in
 brainfuck like this:
 
     [ stuff [-]]
@@ -123,7 +123,7 @@ copy of it in the process.
         }
     }
 
-We introduce a new variable <code>y</code> and initalize it to 0. The
+We introduce a new variable <code>y</code> and initialize it to 0. The
 clear loop has been modified so that each time <code>x</code> is
 decremented, <code>y</code> is also incremented. Our clear loop has
 been turned into a move loop. However, brainfuck doesn't really have
@@ -186,27 +186,26 @@ code's if statements.
     [>-<[-]]    # if x non zero then clear flag
     >[ stuff -] # if flag still set then do stuff
 
-In brainfuck, any character other than the 8 instructions
-(<code>[</code>, <code>]</code>, <code>+</code>, <code>-</code>,
-<code>,</code>, <code>.</code>, <code>&lt;</code> and
-<code>&gt;</code>) is considered a comment and will be ignored by the
-interpreter or compiler. This last example is in other words a
-perfectly valid program, even with the <code># comments</code>.
-
-The following two animations visualize execution with 0 and 4 provided
-as input:
+The following two animations visualize the execution of such a
+program, where <code>stuff</code> writes the flag as output if <code>x
+== 0</code>. First with 0 as input:
 
 ![if zero, destructively, 0 as input](/img/bfflow_ifzero_destructive_0.gif)
 
+And then with 4 as input:
+
 ![if zero, destructively, 4 as input](/img/bfflow_ifzero_destructive_1.gif)
+
+Note that while we chose to use the destructive "if non-zero" here, we
+could just as well have used the non-destructive one.
 
 
 if zero (non-destructively, efficiently)
 ========================================
 
-An issue with the approaches we've used so far, destructive and
+An issue with the approaches we've seen so far, destructive and
 non-destructive alike, is that they can be rather slow. Due to the
-clear or move loops involved, the runtime of the code will be
+clear or move loops involved, the run time of the code will be
 proportional to the value we're checking. E.g., if that <code>x</code>
 happens to be <code>155</code> then it will take <code>155</code>
 iterations before both clear and move loops terminate.
@@ -239,37 +238,46 @@ the byte read was zero, then <code>stuff</code> will be executed.
 
 ![if zero, non-destructively, efficiently, 0 as input](/img/bfflow_ifzero_nondestructive_efficient_0.gif)
 
-if equals
-=========
+if equal
+========
 
 So why have we spent so much time devising these checks for something
 being zero and non-zero? What is it all good for? Well, brainfuck
-doesn't have any instructions for checking is one thing equals
-another, but we can use the arithemtic instructions and "if zero" to
+doesn't have any instructions for checking if one thing equals
+another, but we can use the arithmetic instructions and "if zero" to
 the same effect. If <code>x == A</code>, where <code>A</code> is some
 constant, then it must also hold that <code>x - A == 0</code>.
 
-Say we wish to do <code>if (x == 4) { stuff }</code>. Here's how:
+Say we wish to write <code>if (x == 4) { stuff }</code>. Here's how:
 
     >+<,                # set a flag and read x
     ----                # subtract 4 from x
     [>-]>[>]<[ stuff ]  # if x became 0: do stuff
-    <++++               # restore original value of x
+    <++++[-]            # restore and clear x
+
+Notice how we took care to restore <code>x</code> by adding 4, even
+though we then immediately clear it with a <code>[-]</code>. This is
+strictly speaking not required in this tiny program, but it does
+illustrate an important point. Here's an example of the program
+executing with the number 2 provided as input:
+
+![if equal 2 as input](/img/bfflow_ifequal_2.gif)
+
+In most brainfuck environments, including the one executing in the
+animation, cells are 8 bit unsigned integers. Subtracting 2 from 0
+means subtracting 2 from 256, so the first cell ends up holding
+254. Clearing that value with a <code>[-]</code> loop would take 254
+iteration in our case, but in other brainfuck environments it may take
+many, many more. For instance, if cells were 32 bits, then we'd be
+looking at more than 4 billion iterations which would severely impact
+the performance of the program. Portable brainfuck code recognizes
+this and always makes sure to restore variables before iterating over
+them.
+
+Here's what the computation looks like when the number 4 is read and
+the equality condition is met:
 
 ![if equal 4 as input](/img/bfflow_ifequal_1.gif)
-
-![if equal 0 as input](/img/bfflow_ifequal_0.gif)
-
-<!-- TODO: wrapping and why 0-4 = 252. -->
-
-<!--
-Note that we took care to restore x by adding 12, even though we
-immediately after clear it with [-]. That's not required in most
-brainfuck envs, but for the code to be portable it's a must. Cell size
-can be more than 8 bits. Say it's 64. Well, if x was say 10, then the
-cell will hold -1 (or 2^64-2 if unsigned cells) and that clear loop
-will take ages to finish clearing the cell.
--->
 
 switch
 ======
@@ -290,7 +298,12 @@ statement. Say we wish to write this program:
 This can of course be accomplished with a sequence of "if equal", but
 there is another relatively common pattern that is worth mentioning:
 
-    +>,--[---[<->+++++[-]]<[- foo ]>]<[- bar ]
+    +>,--[---[<->+++++[-]]
+    <[- foo ]>]
+    <[- bar ]
+
+This can of course be extended to any number of cases.
+
 
 <!--
     +>,--[---[<->+++++[-]]<[- case 5 ]>]<[- case 2 ]
