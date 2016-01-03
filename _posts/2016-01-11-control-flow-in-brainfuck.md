@@ -59,8 +59,9 @@ if non-zero (destructively)
 Let's say we wish to write a program like this:
 
     x = read()
-    if (x != 0):
+    if (x != 0) {
         write(x)
+    }
 
 Accomplishing the same in brainfuck, using only "while non-zero", is
 not too difficult. Replace the <code>if (x != 0)</code> with a
@@ -70,10 +71,12 @@ have an assignment instruction, so clearing <code>x</code> requires
 using a nested while loop:
 
     x = read()
-    while (x != 0):
+    while (x != 0) {
         write(x)
-        while (x != 0):
+        while (x != 0) {
             x = x - 1
+        }
+    }
 
 As clunky as this may seem, each line in the example corresponds to a
 brainfuck instruction, and the resulting program is as elegant as it
