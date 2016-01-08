@@ -10,21 +10,21 @@ of control flow statements. We are accustomed to using loops like
 <code>for</code> and <code>while</code>; conditional branches like
 <code>if</code> and <code>switch</code>; subroutine invocations and
 perhaps even unconditional jumps like <code>goto</code>. Similarly,
-there is usually a plethora of arithmetical operators that make
+there is usually a plethora of arithmetic operators that make
 comparing things a breeze.
 
 True to its name, brainfuck is markedly different. Its only control
-flow statement also doubles as its only means of performing
-arithmetical comparison. In this blog post, we'll have a look at some
-common high level control flow mechanisms and how the equivalent
-functionality can be implemented in brainfuck.
+flow statement also doubles as its only means of performing arithmetic
+comparison. In this blog post, we'll have a look at some common high
+level control flow mechanisms and how the equivalent functionality can
+be implemented in brainfuck.
 
 The reader is encouraged to read up a bit about brainfuck before
 proceeding, for instance by checking out the first half or so of [this
 previous post](/2014/09/30/brainfuck-java.html), but no prior
 experience of the language should really be needed.
 
-Control flow and arithmetical comparison in brainfuck
+control flow and arithmetic comparison in brainfuck
 =====================================================
 
 Brainfuck's <code>[</code> and <code>]</code> instructions are
@@ -35,23 +35,16 @@ entered. A brainfuck program like this:
 
     []
 
-Is roughly equivalent to
+Is roughly equivalent to:
 
     while (x != 0) {
     }
 
 Programming with "while non-zero" as the only conditional statement
-and as the only means of arithmetical comparison can be a bit of a
-challenge. As the rest of this post illustrates, it is however
-sufficient.
-
-<!--
-This shouldn't come as a surprise either, since brainfuck
-is turing-complete and as such can solve any solveable computational
-problem.
--->
-
-<!-- this section felt a bit thin. pointless. -->
+and as the only means of arithmetic comparison can be a bit of a
+challenge. However, as the rest of this post hopefully illustrates,
+learning a handful of relatively simple brainfuck idioms can go a long
+way to simplify the process.
 
 if non-zero (destructively)
 ===========================
@@ -64,7 +57,7 @@ Let's say we wish to write a program like this:
     }
 
 Accomplishing the same in brainfuck, using only "while non-zero", is
-not too difficult. Replace the <code>if (x != 0)</code> with a
+not too difficult: replace the <code>if (x != 0)</code> with a
 <code>while (x != 0)</code> and then make sure <code>x == 0</code>
 before the loop is able to iterate a second time. Brainfuck doesn't
 have an assignment instruction, so clearing <code>x</code> requires
@@ -78,9 +71,9 @@ using a nested while loop:
         }
     }
 
-As clunky as this may seem, each line in the example corresponds to a
-brainfuck instruction, and the resulting program is as elegant as it
-is terse:
+At first glance this program may appear both clunky and stupid, but
+each of the seven lines corresponds to a brainfuck instruction and the
+resulting program is as elegant as it is terse:
 
     ,[.[-]]
 
@@ -88,7 +81,7 @@ Let's walk through the code. Input is read into a memory cell using
 the <code>,</code> instruction. A "while non-zero" loop is opened
 using <code>[</code> and the <code>.</code> instruction writes the
 memory cell as output. The inner loop <code>[-]</code> repeatedly
-decrements the memory cell until it reaches zero which allows
+decrements the memory cell until it reaches zero, which allows
 execution to move past the final <code>]</code>.
 
 ![if non-zero, destructively, 4 as input](/img/bfflow_ifnonzero_destructive_1.gif)
@@ -101,11 +94,8 @@ the number 0 was read instead, execution would flow like this:
 ![if non-zero, destructively, 0 as input](/img/bfflow_ifnonzero_destructive_0.gif)
 
 To summarize, <code>if (x != 0) { stuff }</code> can be implemented in
-brainfuck like this:
-
-    [ stuff [-]]
-
-Albeit in a way that destroys the value held in <code>x</code>.
+brainfuck like this: <code>[ stuff [-]]</code>. Albeit in a way that
+destroys the value held in <code>x</code>.
 
 
 if non-zero (non-destructively)
@@ -134,12 +124,13 @@ variables, so the pseudo code can't just be translated line by line as
 we did in the destructive case.
 
 Instead of variables, brainfuck has a single, large contiguous memory
-area. All memory cells are initially set to 0. There is a pointer that
-points at the leftmost cell in the memory area. Brainfuck is all about
-moving that pointer around and operating on the cell it points at.
+area in which all memory cells initially are set to 0. There is a
+pointer that initially points at the leftmost cell in the memory
+area. Brainfuck is all about moving that pointer around and operating
+on the cell it points at.
 
 Using the <code>&lt;</code> and <code>&gt;</code> instructions, we can
-move the pointer left and right respectively. This allows us to make
+step the pointer left and right respectively. This allows us to make
 use of a second memory cell in place of the variable
 <code>y</code>. In this case, we use the cell to the right of where we
 store <code>x</code>:
@@ -154,13 +145,10 @@ it.
 ![if non-zero, non-destructively, 4 as input](/img/bfflow_ifnonzero_nondestructive_1.gif)
 
 More generally, we can implement <code>if (x != 0) { stuff }</code>
-non-destructively like this:
-
-    [ stuff [->+<]]
-
-Beware that <code>stuff</code> must be kept from tampering with both
-the current cell and the one above it, since these are both accessed
-in the move loop.
+non-destructively like this: <code>[ stuff [->+<]]</code>. Beware that
+<code>stuff</code> must be kept from tampering with both the current
+cell and the one above it, since these are both accessed in the move
+loop.
 
 if zero
 =======
@@ -185,9 +173,9 @@ pseudo code and in brainfuck. For the latter, we will of course have
 to use one of our "if non-zero" constructs in place of the pseudo
 code's if statements.
 
-    >+<,        # set flag and read x
-    [>-<[-]]    # if x non zero then clear flag
-    >[ stuff -] # if flag still set then do stuff
+    >+<,            # set flag and read x
+    [>-<[-]]        # if x non zero then clear flag
+    >[ stuff -]     # if flag still set then do stuff
 
 The following two animations visualize the execution of such a
 program, where <code>stuff</code> writes the flag as output if <code>x
@@ -211,24 +199,26 @@ non-destructive alike, is that they can be rather slow. Due to the
 clear or move loops involved, the run time of the code will be
 proportional to the value we're checking. E.g., if that <code>x</code>
 happens to be <code>155</code> then it will take <code>155</code>
-iterations before both clear and move loops terminate.
+iterations before the loops terminate.
 
 We can do better:
 
     >+<,[>-]>[>]<[ stuff -]
 
-<!-- TODO mention that pseudo code is pointless here -->
-
-<!-- TODO this is more complex than previous examples. those loops
-          with only 1 > serve to make sure pointer gets repositioned
-          at same cell for all inputs. -->
+This approach is more complex than what we've seen previously. Instead
+of nice, balanced loops, where the number of <code>&lt;</code> is
+equal to the number of <code>&gt;</code>, we have loops like
+<code>[&gt;-]</code> that repositions the memory pointer if
+entered. These conditionals are required to guarantee that the pointer
+ends up in the same place, regardless of whether the value inspected
+was zero or not.
 
 Let's say the byte read is non-zero. The <code>[&gt;-]&gt;</code> will
-then clear the flag and reposition the pointer to the cell above the
-flag. Since this cell is 0, the following <code>[&gt;]</code> won't be
-executed and the final <code>&lt;</code> repositions the pointer back
-to the flag cell, which will still be 0. Consequently, if the byte
-read was non-zero, then <code>stuff</code> will not be executed.
+then clear the flag and reposition the pointer to the cell above
+it. Since this cell holds 0, the following <code>[&gt;]</code> won't
+be executed and the final <code>&lt;</code> repositions the pointer
+back to the flag cell, which will still be 0. Consequently, if the
+byte read was non-zero, then <code>stuff</code> will not be executed.
 
 ![if zero, non-destructively, efficiently, 4 as input](/img/bfflow_ifzero_nondestructive_efficient_1.gif)
 
@@ -267,15 +257,15 @@ executing with the number 2 provided as input:
 ![if equal 2 as input](/img/bfflow_ifequal_2.gif)
 
 In most brainfuck environments, including the one executing in the
-animation, cells are 8 bit unsigned integers. Subtracting 2 from 0
-means subtracting 2 from 256, so the first cell ends up holding
-254. Clearing that value with a <code>[-]</code> loop would take 254
-iteration in our case, but in other brainfuck environments it may take
-many, many more. For instance, if cells were 32 bits, then we'd be
-looking at more than 4 billion iterations which would severely impact
-the performance of the program. Portable brainfuck code recognizes
-this and always makes sure to restore variables before iterating over
-them.
+animation, cells are 8 bit unsigned integers. Subtracting from 0 means
+the value will wrap around to 255, so subtracting 2 from 0 result in
+the first cell holding 254. Clearing that value with a
+<code>[-]</code> loop would take 254 iteration in our case, but in
+other brainfuck environments it may take many, many more. For
+instance, if cells were 32 bits, then we'd be looking at more than 4
+billion iterations which would severely impact the performance of the
+program. Portable brainfuck code recognizes this issue and always
+makes sure to restore variables before iterating over them.
 
 Here's what the computation looks like when the number 4 is read and
 the equality condition is met:
@@ -290,44 +280,59 @@ statement. Say we wish to write this program:
 
     x = read()
     switch (x) {
-      case 5 {
+      case 6 {
         foo
       }
-      case 2 {
+      case 5 {
         bar
+      }
+      case 2 {
+        baz
       }
     }
 
 This can of course be accomplished with a sequence of "if equal", but
 there is another relatively common pattern that is worth mentioning:
 
-    +>,--[---[<->+++++[-]]
+    +>,--[---[-[<->+++++[-]]
     <[- foo ]>]
-    <[- bar ]
+    <[- bar ]>]
+    <[- baz ]
 
-This can of course be extended to any number of cases.
+Here we see three levels of nested loops, each preceded by
+subtractions matching one of the three cases. If the value we're
+switching over matches any of the cases then the corresponding loop
+will not be entered. If all are entered, i.e. if no case matches, then
+the innermost loop is entered, the value is cleared and, more
+significantly, so is the flag set in the very beginning. The remaining
+three lines can then trust that if the flag is still set, then the
+value matched their respective case.
 
+<!-- above paragraph is meh -->
 
-<!--
-    +>,--[---[<->+++++[-]]<[- case 5 ]>]<[- case 2 ]
+The following two animations visualize this procedure for values 2 and
+6. Here we've replaced <code>foo</code>, <code>bar</code> and
+<code>baz</code> with <code>...</code>, <code>..</code> and
+<code>.</code> respectively.
 
+![switch 2 as input](/img/bfflow_switch_2.gif)
 
-    +>        # the first cell is a flag initially set to 1
-    ,         # second cell holds the value read
-    --[       # enter outer loop iff value != 2
-    ---[      # enter inner loop iff value != 5
-    <->       # clear the flag in the first cell
-    ++++++[-] # restore the original value and then clear the cell
-    ]         # and exit the inner loop
+![switch 6 as input](/img/bfflow_switch_6.gif)
 
-    <[-       # if the flag is still set at this point then the
-              # inner loop cannot have been entered; consequently
-              # this loop is only entered if value == 5;
-              # we clear the flag and whatever is required for case 5
+Again, if none of the cases matches then the flag will be cleared by
+the inner loop, so no output will be produced. Here's the program
+executing with 8 as input.
 
-    ]>]       # close the case 5 body and the outer loop
-    <[-       # the only way the flag is still set at this point is if
-              # value == 2; so if this loop is entered then we clear the
-              # flag and do whatever is required for case 2
-    ]         # and then we're done
--->
+![switch 8 as input](/img/bfflow_switch_8.gif)
+
+Summary
+=======
+
+Developing in brainfuck can be a daunting experience. Especially so
+due to the limited options for control flow. As we've seen in this
+post, there are mechanisms and idioms that cover most of what one
+would expect from a high level language.
+
+That was all.
+
+<!-- more stuff in this section -->
