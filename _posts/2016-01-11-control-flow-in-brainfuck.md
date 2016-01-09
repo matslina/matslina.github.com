@@ -124,7 +124,7 @@ variables, so the pseudo code can't just be translated line by line as
 we did in the destructive case.
 
 What brainfuck does have though is a large, contiguous memory area and
-a pointer pointing into the memory area. Intially, all memory cells
+a pointer pointing into the memory area. Initially, all memory cells
 are set to 0 and the pointer points at the leftmost cell. Brainfuck is
 all about moving that pointer around and operating on the cell it
 points at.
@@ -258,7 +258,7 @@ executing with the number 2 provided as input:
 
 In most brainfuck environments, including the one executing in the
 animation, cells are 8 bit unsigned integers. Subtracting from 0 means
-the value will wrap around to 255, so subtracting 2 from 0 result in
+the value will wrap around to 255, so subtracting 2 from 0 results in
 the first cell holding 254. Clearing that value with a
 <code>[-]</code> loop would take 254 iterations in our case, but in
 other brainfuck environments it may take many, many more. For
