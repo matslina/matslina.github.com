@@ -43,8 +43,8 @@ Is roughly equivalent to:
 Programming with "while non-zero" as the only conditional statement
 and as the only means of arithmetic comparison can be a bit of a
 challenge. However, as the rest of this post hopefully illustrates,
-learning a handful of relatively simple brainfuck idioms can go a long
-way to simplify the process.
+mastering a handful of relatively simple brainfuck idioms can go a
+long way.
 
 if non-zero (destructively)
 ===========================
@@ -61,7 +61,7 @@ not too difficult: replace the <code>if (x != 0)</code> with a
 <code>while (x != 0)</code> and then make sure <code>x == 0</code>
 before the loop is able to iterate a second time. Brainfuck doesn't
 have an assignment instruction, so clearing <code>x</code> requires
-using a nested while loop:
+a nested while loop:
 
     x = read()
     while (x != 0) {
@@ -71,9 +71,9 @@ using a nested while loop:
         }
     }
 
-At first glance this program may appear both clunky and stupid, but
-each of the seven lines corresponds to a brainfuck instruction and the
-resulting program is as elegant as it is terse:
+At first glance this program may appear clunky and strange, but each
+of the seven lines can be translated directly to a brainfuck
+instruction. The result is as elegant as it is terse:
 
     ,[.[-]]
 
@@ -123,11 +123,13 @@ been turned into a move loop. However, brainfuck doesn't really have
 variables, so the pseudo code can't just be translated line by line as
 we did in the destructive case.
 
-Instead of variables, brainfuck has a single, large contiguous memory
-area in which all memory cells initially are set to 0. There is a
-pointer that initially points at the leftmost cell in the memory
-area. Brainfuck is all about moving that pointer around and operating
-on the cell it points at.
+Instead of variables, brainfuck has a large contiguous memory area in
+which all memory cells are initially set to 0. There is a pointer that
+points at the leftmost cell in the memory area. Brainfuck is
+all about moving that pointer around and operating on the cell it
+points at.
+
+<!-- above feels a bit off -->
 
 Using the <code>&lt;</code> and <code>&gt;</code> instructions, we can
 step the pointer left and right respectively. This allows us to make
@@ -243,10 +245,10 @@ constant, then it must also hold that <code>x - A == 0</code>.
 
 Say we wish to write <code>if (x == 4) { stuff }</code>. Here's how:
 
-    >+<,                # set a flag and read x
-    ----                # subtract 4 from x
-    [>-]>[>]<[ stuff ]  # if x became 0: do stuff
-    <++++[-]            # restore and clear x
+    >+<,                  # set a flag and read x
+    ----                  # subtract 4 from x
+    [>-]>[>]<[- stuff ]   # if x became 0: do stuff
+    <++++[-]              # restore and clear x
 
 Notice how we took care to restore <code>x</code> by adding 4, even
 though we then immediately clear it with a <code>[-]</code>. This is
@@ -260,7 +262,7 @@ In most brainfuck environments, including the one executing in the
 animation, cells are 8 bit unsigned integers. Subtracting from 0 means
 the value will wrap around to 255, so subtracting 2 from 0 result in
 the first cell holding 254. Clearing that value with a
-<code>[-]</code> loop would take 254 iteration in our case, but in
+<code>[-]</code> loop would take 254 iterations in our case, but in
 other brainfuck environments it may take many, many more. For
 instance, if cells were 32 bits, then we'd be looking at more than 4
 billion iterations which would severely impact the performance of the
