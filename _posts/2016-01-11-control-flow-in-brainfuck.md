@@ -123,13 +123,11 @@ been turned into a move loop. However, brainfuck doesn't really have
 variables, so the pseudo code can't just be translated line by line as
 we did in the destructive case.
 
-Instead of variables, brainfuck has a large contiguous memory area in
-which all memory cells are initially set to 0. There is a pointer that
-points at the leftmost cell in the memory area. Brainfuck is
+What brainfuck does have though is a large, contiguous memory area and
+a pointer pointing into the memory area. Intially, all memory cells
+are set to 0 and the pointer points at the leftmost cell. Brainfuck is
 all about moving that pointer around and operating on the cell it
 points at.
-
-<!-- above feels a bit off -->
 
 Using the <code>&lt;</code> and <code>&gt;</code> instructions, we can
 step the pointer left and right respectively. This allows us to make
@@ -296,21 +294,18 @@ statement. Say we wish to write this program:
 This can of course be accomplished with a sequence of "if equal", but
 there is another relatively common pattern that is worth mentioning:
 
-    +>,--[---[-[<->+++++[-]]
+    +>,
+    --[---[-[<->+++++[-]]
     <[- foo ]>]
     <[- bar ]>]
     <[- baz ]
 
-Here we see three levels of nested loops, each preceded by
-subtractions matching one of the three cases. If the value we're
-switching over matches any of the cases then the corresponding loop
-will not be entered. If all are entered, i.e. if no case matches, then
-the innermost loop is entered, the value is cleared and, more
-significantly, so is the flag set in the very beginning. The remaining
-three lines can then trust that if the flag is still set, then the
-value matched their respective case.
-
-<!-- above paragraph is meh -->
+Here we have three levels of nested loops, each of which preceeded by
+subtractions matching one of the three cases so that they're entered
+unless the corresponding case is matched. If no case matches then the
+innermost loop will clear the value, and more significantly also a
+flag. The last three lines can trust that if the flag is still set
+then their case has been matched.
 
 The following two animations visualize this procedure for values 2 and
 6. Here we've replaced <code>foo</code>, <code>bar</code> and
@@ -327,6 +322,9 @@ executing with 8 as input.
 
 ![switch 8 as input](/img/bfflow_switch_8.gif)
 
+Making this construct non-destructive is not too difficult, but left
+as an exercise for the reader.
+
 Summary
 =======
 
@@ -336,5 +334,3 @@ post, there are mechanisms and idioms that cover most of what one
 would expect from a high level language.
 
 That was all.
-
-<!-- more stuff in this section -->
