@@ -322,8 +322,8 @@ executing with 8 as input.
 
 ![switch 8 as input](/img/bfflow_switch_8.gif)
 
-Making this construct non-destructive is not too difficult, but left
-as an exercise for the reader.
+Making this construct non-destructive is not too difficult, but is
+left as an exercise for the reader.
 
 Summary
 =======
