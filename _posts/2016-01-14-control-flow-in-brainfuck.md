@@ -24,8 +24,9 @@ proceeding, for instance by checking out the first half or so of [this
 previous post](/2014/09/30/brainfuck-java.html), but no prior
 experience of the language should really be needed.
 
-control flow and arithmetic comparison in brainfuck
-=====================================================
+
+what we have to work with
+=========================
 
 Brainfuck's <code>[</code> and <code>]</code> instructions are
 functionally equivalent to a "while non-zero" loop, i.e. a while loop
@@ -89,7 +90,8 @@ execution to move past the final <code>]</code>.
 The animation above shows the program being executed with the number 4
 provided as input. At each step we can see the currently executing
 instruction highlighted in red and how it affects the memory cell. If
-the number 0 was read instead, execution would flow like this:
+the number 0 was read instead, then the outer loop wouldn't be entered
+and no output would be written. Execution would flow like this:
 
 ![if non-zero, destructively, 0 as input](/img/bfflow_ifnonzero_destructive_0.gif)
 
@@ -198,7 +200,7 @@ An issue with the approaches we've seen so far, destructive and
 non-destructive alike, is that they can be rather slow. Due to the
 clear or move loops involved, the run time of the code will be
 proportional to the value we're checking. E.g., if that <code>x</code>
-happens to be <code>155</code> then it will take <code>155</code>
+happens to be 155 then it will take 155
 iterations before the loops terminate.
 
 We can do better:
@@ -245,7 +247,7 @@ Say we wish to write <code>if (x == 4) { stuff }</code>. Here's how:
 
     >+<,                  # set a flag and read x
     ----                  # subtract 4 from x
-    [>-]>[>]<[- stuff ]   # if x became 0: do stuff
+    [>-]>[>]<[ stuff -]   # if x became 0 then do stuff
     <++++[-]              # restore and clear x
 
 Notice how we took care to restore <code>x</code> by adding 4, even
@@ -276,7 +278,9 @@ switch
 ======
 
 The final mechanism we'll consider is the <code>switch</code>
-statement. Say we wish to write this program:
+statement. It is a little bit redundant, since the same functionality
+can be achieved with a sequence of "if equal", but it is still good to
+be familiar with it.
 
     x = read()
     switch (x) {
@@ -291,8 +295,13 @@ statement. Say we wish to write this program:
       }
     }
 
-This can of course be accomplished with a sequence of "if equal", but
-there is another relatively common pattern that is worth mentioning:
+The brainfuck version has three levels of nested loops, each of which
+preceeded by subtractions matching one of the three cases. These loops
+are entered unless the corresponding case is matched. If no case
+matches then the innermost loop will clear the value, and more
+significantly also a flag. The last three lines each check the flag,
+execute their code. The last three lines can trust that if the flag is
+still set then their case has been matched.
 
     +>,
     --[---[-[<->+++++[-]]
@@ -300,12 +309,6 @@ there is another relatively common pattern that is worth mentioning:
     <[- bar ]>]
     <[- baz ]
 
-Here we have three levels of nested loops, each of which preceeded by
-subtractions matching one of the three cases so that they're entered
-unless the corresponding case is matched. If no case matches then the
-innermost loop will clear the value, and more significantly also a
-flag. The last three lines can trust that if the flag is still set
-then their case has been matched.
 
 The following two animations visualize this procedure for values 2 and
 6. Here we've replaced <code>foo</code>, <code>bar</code> and
@@ -322,7 +325,7 @@ executing with 8 as input.
 
 ![switch 8 as input](/img/bfflow_switch_8.gif)
 
-Making this construct non-destructive is not too difficult, but is
+Making this construct non-destructive is not too difficult, but it is
 left as an exercise for the reader.
 
 Summary
@@ -332,5 +335,11 @@ Developing in brainfuck can be a daunting experience. Especially so
 due to the limited options for control flow. As we've seen in this
 post, there are mechanisms and idioms that cover most of what one
 would expect from a high level language.
+
+With that said, brainfuck is still a very special language and one
+shouldn't expect to be able to apply this material blindly. Writing a
+non-trivial brainfuck program is a challenging task and requires
+genuine understanding. We hope this post has made things a little bit
+clearer.
 
 That was all.
