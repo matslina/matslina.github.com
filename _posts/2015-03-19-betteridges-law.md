@@ -89,3 +89,5 @@ would put the total ratio of "no" at 25%.
 In other words, it appears as if *roughly a quarter of all headlines
 which end in a question mark can be answered by the word no*. You can
 go ahead and call that Linander's law of headlines, if you will.
+
+**See also:** Comments on [hacker news](https://news.ycombinator.com/item?id=9232419)
