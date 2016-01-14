@@ -2,7 +2,7 @@
 layout: post
 title: control flow in brainfuck
 location: New York
-draft: true
+draft: false
 ---
 
 Imperative programming languages normally offer developers a multitude
