@@ -296,7 +296,7 @@ be familiar with it.
     }
 
 The brainfuck version has three levels of nested loops, each of which
-preceeded by subtractions matching one of the three cases. These loops
+preceded by subtractions matching one of the three cases. These loops
 are entered unless the corresponding case is matched. If no case
 matches then the innermost loop will clear the value, and more
 significantly also a flag. The last three lines each check the flag,
