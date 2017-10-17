@@ -102,7 +102,7 @@ provides a very simple and somewhat naive way of compiling brainfuck.
 </tr>
 <tr>
  <td style="text-align: center;"><code>]</code></td>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 </table>
