@@ -205,7 +205,7 @@ operation should be applied <code>x</code> times:
  <td><code>while(mem[p]) {</code></td>
 </tr>
 <tr>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 </table>
@@ -286,7 +286,7 @@ the IR.
  <td><code>while(mem[p]) {</code></td>
 </tr>
 <tr>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 <tr style="background-color: #aaeeaa;">
@@ -358,7 +358,7 @@ adds a copy of the current cell to the cell at offset <code>x</code>.
  <td><code>while(mem[p]) {</code></td>
 </tr>
 <tr>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 <tr>
@@ -437,7 +437,7 @@ sample programs.
  <td><code>while(mem[p]) {</code></td>
 </tr>
 <tr>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 <tr>
@@ -526,7 +526,7 @@ Let's extend the IR by adding two new operations:
  <td><code>while(mem[p]) {</code></td>
 </tr>
 <tr>
- <td><code>Add</code></td>
+ <td><code>Close</code></td>
  <td><code>}</code></td>
 </tr>
 <tr>
